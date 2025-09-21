@@ -1,0 +1,44 @@
+POST http://localhost:4000/api/register
+Headers:
+Content-Type: application/json
+
+Body:
+{
+    "email": "test@example.com",
+    "password": "yourpassword123",
+    "firstName": "Test",
+    "lastName": "User"
+}
+
+POST http://localhost:4000/api/login
+Headers:
+Content-Type: application/json
+
+Body:
+{
+    "email": "test@example.com",
+    "password": "yourpassword123"
+}
+
+POST http://localhost:4000/forgot-password
+Headers:
+Content-Type: application/json
+
+Body:
+{
+    "email": "test@example.com"
+}
+
+POST http://localhost:4000/api/reset-password
+Headers:
+Content-Type: application/json
+
+Body:
+{
+    "token": "received-token",
+    "newPassword": "newpassword123"
+}
+
+POST http://localhost:4000/api/refresh
+Headers:
+Cookie: refreshToken=your-refresh-token
