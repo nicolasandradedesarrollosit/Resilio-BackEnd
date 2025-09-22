@@ -6,6 +6,7 @@ import { sendMail } from "../util/mailer.js";
 
 export async function mailRecoverPassword(req, res, next){
     try{
+        const URL_FRONT = process.env.URL_FRONT || 'http:/localhost:5173';
         const { email } = req.body;
         const user = await findOneByEmail(email);
         if(!user) return res.json({ ok: true, message: 'Si el email existe, se enviará un enlace'});

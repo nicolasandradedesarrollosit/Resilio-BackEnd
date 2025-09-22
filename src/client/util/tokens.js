@@ -12,8 +12,15 @@ export function hashToken(token){
 export function signJWT(user){
     return jwt.sign({
         sub: user.id,
+        name: user.name,
         email: user.email,
-        role: user.role 
+        role: user.role,
+        email_verified: user.email_verified,
+        is_active: user.is_active,
+        phone_number: user.phone_number,
+        created_at: user.created_at,
+        updated_at: user.updated_at,
+        token_version: user.token_version
     }, 
     process.env.JWT_SECRET, 
     {

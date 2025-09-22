@@ -101,8 +101,7 @@ export async function logIn(req, res, next){
         return res.json({
             ok: true,
             data: {
-                accessToken,
-                user: {id: user.id, name: user.name, email: user.email, role: user.role}
+                accessToken
             }
         })
     }
