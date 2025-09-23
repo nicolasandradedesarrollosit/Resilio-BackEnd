@@ -27,16 +27,16 @@ const URL_FRONT = process.env.URL_FRONT || 'http:/localhost:5173';
 
 export async function register(req, res, next){
     try{
-    const {name, email, phone_number, password} = req.body;
+    const {name, province, city, phone_number, email, password} = req.body;
 
     const exists = await findOneByEmail(email);
     if(exists) return res.status(409).json({ ok: false, message: 'Error de credenciales' });
 
-    const isValid = validateFieldsRegister(name, email, phone_number, password);
+    const isValid = validateFieldsRegister(name, province, city, phone_number, email, password);
     if(!isValid) res.status(400).json({ ok: false, message: 'Error de credenciales' });
 
     const hash = await hashPassword(password)
-    const user = await createUser({name, email, phone_number, hash});
+    const user = await createUser({name, province, city, phone_number, email, hash});
 
     const tokenPlano = generateRandomToken(32);
     const tokenHashed = hashToken(tokenPlano);

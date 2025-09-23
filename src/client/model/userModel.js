@@ -1,11 +1,11 @@
 import { pool } from '../../others/config/db.js';
 
-export async function createUser({ name, email, phone_number, hash }){
+export async function createUser({ name, province, city, phone_number, email, hash }){
     const { rows }= await pool.query(
-        `INSERT INTO users (name, email, phone_number, password_hash)
-        VALUES ($1, $2, $3, $4)
+        `INSERT INTO users (name, province, city, phone_number, email, password_hash)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING id, name, email, phone_number, email_verified, token_version, created_at, role`,
-        [name, email, phone_number, hash]
+        [name, province, city, phone_number, email, hash]
     )
     return rows[0];
 }
