@@ -42,3 +42,6 @@ Body:
 POST http://localhost:4000/api/refresh
 Headers:
 Cookie: refreshToken=your-refresh-token
+
+test register = 
+password = Testing123;
