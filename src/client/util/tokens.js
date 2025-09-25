@@ -20,7 +20,8 @@ export function signJWT(user){
         phone_number: user.phone_number,
         created_at: user.created_at,
         updated_at: user.updated_at,
-        token_version: user.token_version
+        token_version: user.token_version,
+        isPremium: user.ispremium
     }, 
     process.env.JWT_SECRET, 
     {
