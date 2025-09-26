@@ -92,9 +92,9 @@ export async function logIn(req, res, next){
         res.cookie('refresh_token', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',       
-            sameSite: process.env.COOKIE_SAMESITE || 'lax',      
-            domain: process.env.COOKIE_DOMAIN || undefined,      
-            path: '/api',                                   
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
+            path: '/api',
             maxAge: expiresRefresh
         });
 
