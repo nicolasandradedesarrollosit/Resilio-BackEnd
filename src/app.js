@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('https://resilio-backend.onrender.com/health-check', async (_req, res) => {
+app.get('/health-check', async (_req, res) => {
     try{
         await pool.query('SELECT 1');
         res.json({ ok: true, message: 'API OK'});
@@ -20,9 +20,9 @@ app.get('https://resilio-backend.onrender.com/health-check', async (_req, res) =
     }
 })
 
-app.use('https://resilio-backend.onrender.com/api', userRoute);
-app.use('https://resilio-backend.onrender.com/api', passwordRoute);
-app.use('https://resilio-backend.onrender.com/api', refreshRoute);
+app.use('/api', userRoute);
+app.use('/api', passwordRoute);
+app.use('/api', refreshRoute);
 
 app.use((err, _req, res, _next) => {
     console.error(err);
