@@ -11,13 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/health-check', async (_req, res) => {
-    try{
-        await pool.query('SELECT 1');
-        res.json({ ok: true, message: 'API OK'});
-    }
-    catch{
-        res.status(500).json({ ok: false, message: 'DB caída' });
-    }
+    res.status(200).json({ ok: true, message: 'API corriendo en Render 🚀' });
 })
 
 app.use('/api', userRoute);
