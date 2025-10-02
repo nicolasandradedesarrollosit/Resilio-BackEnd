@@ -53,3 +53,35 @@ export async function updatePassword(user_id, new_hash){
 export async function increaseTokenVersion(userId) {
   await pool.query(`UPDATE users SET token_version = token_version + 1 WHERE id=$1`, [userId]);
 }
+
+
+export async function createUserWithGoogle({ name, email, googleId, role = 'user' }) {
+  const { rows } = await pool.query(
+    `INSERT INTO users
+      (name, email, google_id, avatar, email_verified, role, token_version, auth_providers, created_at, updated_at)
+     VALUES
+      ($1, $2, $3, $4, true, $5, 0, $6, NOW(), NOW())
+     RETURNING id, name, email, phone_number, email_verified, token_version, role, avatar, google_id, auth_providers`,
+    [name, email, googleId, avatar || null, role, ['google']]
+  );
+  return rows[0];
+}
+
+export async function addGoogleToExistingUser(userId, googleId) {
+  const { rows } = await pool.query(
+    `UPDATE users
+     SET google_id = $1,
+         auth_providers = (
+           CASE
+             WHEN auth_providers IS NULL THEN ARRAY['google']
+             WHEN NOT ('google' = ANY(auth_providers)) THEN array_append(auth_providers, 'google')
+             ELSE auth_providers
+           END
+         ),
+         updated_at = NOW()
+     WHERE id = $2
+     RETURNING id, name, email, phone_number, email_verified, token_version, role, avatar, google_id, auth_providers`,
+    [googleId, userId]
+  );
+  return rows[0];
+}
