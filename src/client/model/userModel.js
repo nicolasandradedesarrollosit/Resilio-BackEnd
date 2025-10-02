@@ -58,11 +58,11 @@ export async function increaseTokenVersion(userId) {
 export async function createUserWithGoogle({ name, email, googleId, role = 'user' }) {
   const { rows } = await pool.query(
     `INSERT INTO users
-      (name, email, google_id, avatar, email_verified, role, token_version, auth_providers, created_at, updated_at)
+      (name, email, google_id, email_verified, role, token_version, auth_providers, created_at, updated_at)
      VALUES
-      ($1, $2, $3, $4, true, $5, 0, $6, NOW(), NOW())
-     RETURNING id, name, email, phone_number, email_verified, token_version, role, avatar, google_id, auth_providers`,
-    [name, email, googleId, avatar || null, role, ['google']]
+      ($1, $2, $3, true, $4, 0, $5, NOW(), NOW())
+     RETURNING id, name, email, phone_number, email_verified, token_version, role, google_id, auth_providers`,
+    [name, email, googleId, role, ['google']]
   );
   return rows[0];
 }
@@ -80,7 +80,7 @@ export async function addGoogleToExistingUser(userId, googleId) {
          ),
          updated_at = NOW()
      WHERE id = $2
-     RETURNING id, name, email, phone_number, email_verified, token_version, role, avatar, google_id, auth_providers`,
+     RETURNING id, name, email, phone_number, email_verified, token_version, role, google_id, auth_providers`,
     [googleId, userId]
   );
   return rows[0];

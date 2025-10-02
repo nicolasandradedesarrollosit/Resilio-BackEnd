@@ -7,9 +7,9 @@ import { findOneByEmail, createUserWithGoogle, addGoogleToExistingUser } from '.
 
 export const googleAuth = async (req, res) => {
   try {
-    const { supabaseToken, email, googleId } = req.body;
+    const { supabaseToken, email} = req.body;
 
-    if (!supabaseToken || !email || !googleId) {
+    if (!supabaseToken || !email) {
       return res.status(400).json({ error: 'Faltan datos requeridos' });
     }
 
@@ -23,6 +23,12 @@ export const googleAuth = async (req, res) => {
       return res.status(401).json({ error: 'Los datos no coinciden' });
     }
 
+    const googleIdentity = user.identities.find(i => i.provider === 'google');
+    if (!googleIdentity) {
+      return res.status(401).json({ error: 'No se encontró identidad de Google' });
+    }
+
+    const googleId = googleIdentity.id;
     let dbUser = await findOneByEmail(email);
 
     if (dbUser) {
