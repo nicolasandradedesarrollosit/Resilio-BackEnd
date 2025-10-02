@@ -1,5 +1,6 @@
 import { pool } from '../../others/config/db.js';
 
+
 export async function createUser({ name, province, city, phone_number, email, hash }){
     const { rows }= await pool.query(
         `INSERT INTO users (name, province, city, phone_number, email, password_hash)
@@ -55,14 +56,14 @@ export async function increaseTokenVersion(userId) {
 }
 
 
-export async function createUserWithGoogle({ name, email, googleId, role = 'user' }) {
+export async function createUserWithGoogle({ name, email, googleId, role = 'user', hashed }) {
   const { rows } = await pool.query(
     `INSERT INTO users
       (name, email, google_id, email_verified, role, token_version, auth_providers, created_at, updated_at, password_hash)
      VALUES
-      ($1, $2, $3, true, $4, 0, $5, NOW(), NOW(), '@google-provider')
+      ($1, $2, $3, true, $4, 0, $5, NOW(), NOW(), $6
      RETURNING id, name, email, phone_number, email_verified, token_version, role, google_id, auth_providers`,
-    [name, email, googleId, role, ['google']]
+    [name, email, googleId, role, ['google'], hashed]
   );
   return rows[0];
 }

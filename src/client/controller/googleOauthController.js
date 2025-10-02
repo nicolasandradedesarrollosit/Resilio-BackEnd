@@ -4,6 +4,8 @@ import {
   signRefresh
 } from '../util/tokens.js';
 import { findOneByEmail, createUserWithGoogle, addGoogleToExistingUser } from '../model/userModel.js';
+import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
 
 export const googleAuth = async (req, res) => {
   try {
@@ -37,12 +39,15 @@ export const googleAuth = async (req, res) => {
       }
     } else {
       const nombre = user.user_metadata?.full_name || email.split('@')[0];
+      const randomSecret = crypto.randomBytes(48).toString('hex');
+      const hashed = await bcrypt.hash(randomSecret, 12);
 
       dbUser = await createUserWithGoogle({
         name: nombre,
         email,
         googleId,
-        role: 'user'
+        role: 'user',
+        hashed
       });
     }
 
