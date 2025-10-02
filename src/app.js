@@ -4,6 +4,7 @@ import { pool } from './others/config/db.js';
 import userRoute from './client/route/userRoute.js';
 import passwordRoute from './client/route/recoverPasswordRoute.js';
 import refreshRoute from './client/route/refreshRoute.js';
+import googleRoute from './client/route/googleOauthRoute.js';
 import 'dotenv/config';
 
 const app = express();
@@ -17,6 +18,7 @@ app.get('/health-check', async (_req, res) => {
 app.use('/api', userRoute);
 app.use('/api', passwordRoute);
 app.use('/api', refreshRoute);
+app.use('/api', googleRoute);
 
 app.use((err, _req, res, _next) => {
     console.error(err);
