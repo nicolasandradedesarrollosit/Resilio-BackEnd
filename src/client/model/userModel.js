@@ -59,11 +59,11 @@ export async function increaseTokenVersion(userId) {
 export async function createUserWithGoogle({ name, email, googleId, role = 'user', hashed }) {
   const { rows } = await pool.query(
     `INSERT INTO users
-      (name, email, google_id, email_verified, role, token_version, auth_providers, created_at, updated_at, password_hash)
+      (name, email, google_id, email_verified, role, token_version, auth_providers, created_at, updated_at, password_hash, phone_number, province, city)
      VALUES
-      ($1, $2, $3, true, $4, 0, $5, NOW(), NOW(), $6)
+      ($1, $2, $3, true, $4, 0, $5, NOW(), NOW(), $6, $7, $8, $9)
      RETURNING id, name, email, phone_number, email_verified, token_version, role, google_id, auth_providers`,
-    [name, email, googleId, role, ['google'], hashed]
+    [name, email, googleId, role, ['google'], hashed, ['-'], ['-'], ['-'] ]
   );
   return rows[0];
 }
