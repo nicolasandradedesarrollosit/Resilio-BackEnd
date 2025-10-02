@@ -2,6 +2,8 @@ import {
     createUser,
     findOneByEmail,
     patchVerifiedEmail,
+    findOneById,
+    getUserData
 } from '../model/userModel.js';
 import { 
     hashPassword,
@@ -109,4 +111,19 @@ export async function logIn(req, res, next){
         next(err);
     }
 }
+
+export async function returnUserData(req, res, next){
+    try{
+        const { userId } = req.body;
+        if(!userId) return res.status(400).json( {ok: false, message: 'Error de credenciales'} );
+        const exists = await findOneById(userId);
+        if(!exists) return res.status(400).json({ ok: false, message: 'Error de credenciales' });
+
+        const dataUser = await getUserData(userId);
+        return res.status(201).json({ ok: true, data: dataUser });
+    }
+    catch (err){
+        next(err);
+    }
+}   
 

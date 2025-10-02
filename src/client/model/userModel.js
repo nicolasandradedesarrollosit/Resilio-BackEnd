@@ -1,3 +1,4 @@
+import { use } from 'react';
 import { pool } from '../../others/config/db.js';
 
 
@@ -85,4 +86,14 @@ export async function addGoogleToExistingUser(userId, googleId) {
     [googleId, userId]
   );
   return rows[0];
+}
+
+export async function getUserData(userId){
+  const { rows } = await pool.query(
+    `SELECT name, isPremium, role FROM users
+    WHERE id = $1
+    RETURNING name, isPremium, role`,
+    [userId]
+  )
+  return rows[0] || null;
 }
