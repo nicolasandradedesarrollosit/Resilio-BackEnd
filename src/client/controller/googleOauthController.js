@@ -1,9 +1,9 @@
-import supabase from "../../others/config/supabase";
+import supabase from '../../others/config/supabase.js';
 import {
   signJWT,
   signRefresh
 } from '../util/tokens.js';
-import { findOneByEmail, createUserWithGoogle, addGoogleToExistingUser } from "../model/userModel.js";
+import { findOneByEmail, createUserWithGoogle, addGoogleToExistingUser } from '../model/userModel.js';
 
 export const googleAuth = async (req, res) => {
   try {
