@@ -20,9 +20,13 @@ app.use('/api', passwordRoute);
 app.use('/api', refreshRoute);
 app.use('/api', googleRoute);
 
-app.use((err, _req, res, _next) => {
-    console.error(err);
-    res.status(500).json({ok: false, message: 'Error interno'});
+app.use((err, req, res, next) => {
+  console.error('Error en request:', {
+    path: req.path,
+    body: req.body,
+    error: err.stack
+  });
+  res.status(500).json({ message: 'Error interno del servidor' });
 });
 
 export default app;
