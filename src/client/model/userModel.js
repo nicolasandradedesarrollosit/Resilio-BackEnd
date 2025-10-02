@@ -1,4 +1,3 @@
-import { use } from 'react';
 import { pool } from '../../others/config/db.js';
 
 
