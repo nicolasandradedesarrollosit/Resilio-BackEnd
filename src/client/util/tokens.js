@@ -12,7 +12,6 @@ export function hashToken(token){
 export function signJWT(user){
     return jwt.sign({
         sub: user.id,
-        role:user.role
     }, 
     process.env.JWT_SECRET, 
     {

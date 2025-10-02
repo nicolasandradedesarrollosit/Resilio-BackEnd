@@ -115,15 +115,18 @@ export async function logIn(req, res, next){
 export async function returnUserData(req, res, next){
     try{
         const { userId } = req.body;
-        if(!userId) return res.status(400).json( {ok: false, message: 'Error de credenciales'} );
+        if(!userId) return res.status(400).json({ ok: false, message: 'Error de credenciales' });
+        
         const exists = await findOneById(userId);
-        if(!exists) return res.status(400).json({ ok: false, message: 'Error de credenciales' });
+        if(!exists) return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
 
         const dataUser = await getUserData(userId);
-        return res.status(201).json({ ok: true, data: dataUser });
+        
+        if(!dataUser) return res.status(404).json({ ok: false, message: 'Datos no encontrados' });
+        
+        return res.status(200).json({ ok: true, data: dataUser });
     }
     catch (err){
         next(err);
     }
 }   
-
