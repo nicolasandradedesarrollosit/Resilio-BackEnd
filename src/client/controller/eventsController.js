@@ -12,12 +12,11 @@ export async function fetchAllEvents(req, res, next) {
         }
         
         res.status(200).json({
-            message: 'Events retrieved successfully',
-            count: events.length,
+            ok: true,
             data: events
         });
     } catch (err) {
         console.error('Error fetching events:', err);
-        next(err); // Pasar el error al middleware de manejo de errores
+        next(err);
     }
 }
