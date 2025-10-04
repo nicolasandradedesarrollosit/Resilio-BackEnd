@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { getBannerData } from "../controller/bannerController";
+import { 
+    getBannerData 
+} from "../controller/bannerController.js";
 
 const r = Router();
 

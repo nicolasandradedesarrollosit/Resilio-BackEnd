@@ -1,4 +1,4 @@
-import { sendDataBanner } from "../model/bannerModel";
+import { sendDataBanner } from "../model/bannerModel.js";
 
 export async function getBannerData(req, res) {
     try {
