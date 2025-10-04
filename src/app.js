@@ -5,6 +5,7 @@ import userRoute from './client/route/userRoute.js';
 import passwordRoute from './client/route/recoverPasswordRoute.js';
 import refreshRoute from './client/route/refreshRoute.js';
 import googleRoute from './client/route/googleOauthRoute.js';
+import bannerRoute from './client/route/bannerRoute.js';
 import 'dotenv/config';
 
 const app = express();
@@ -19,6 +20,7 @@ app.use('/api', userRoute);
 app.use('/api', passwordRoute);
 app.use('/api', refreshRoute);
 app.use('/api', googleRoute);
+app.use('/api', bannerRoute);
 
 app.use((err, req, res, next) => {
   console.error('Error en request:', {
