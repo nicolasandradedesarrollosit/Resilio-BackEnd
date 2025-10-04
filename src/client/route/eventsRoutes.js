@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { 
     fetchAllEvents 
-} from "../controller/eventsController";
+} from "../controller/eventsController.js";
 
 const r = Router();
 
