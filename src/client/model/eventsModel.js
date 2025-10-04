@@ -1,9 +1,15 @@
 import { pool } from '../../others/config/db.js';
 
 export async function getAllEvents() {
-    const { rows } = await pool.query(
-        `SELECT * FROM events
-        ORDER BY event_date DESC`
-    )
+    try{
+        const { rows } = await pool.query(
+            `SELECT * FROM events
+            ORDER BY event_date DESC`
+        );
     return rows;
+    }
+    catch (error) {
+        console.error('Error fetching events:', error);
+        throw error;
+    }
 }
