@@ -5,6 +5,6 @@ import {
 
 const r = Router();
 
-r.get("/", fetchAllEvents);
+r.get("/events", fetchAllEvents);
 
 export default r;
