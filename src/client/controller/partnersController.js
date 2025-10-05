@@ -1,4 +1,4 @@
-import getAllPartners from '../model/partnersModel.js';
+import { getAllPartners } from '../model/partnersModel.js';
 
 export async function fetchAllPartners(req, res, next) {
     try {
