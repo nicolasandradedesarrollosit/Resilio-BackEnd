@@ -6,7 +6,7 @@ export async function fetchAllEvents(req, res, next) {
         
         if (!events || events.length === 0) {
             return res.status(404).json({ 
-                message: 'No events found',
+                message: 'Sin eventos encontrados',
                 data: [] 
             });
         }
@@ -15,8 +15,8 @@ export async function fetchAllEvents(req, res, next) {
             ok: true,
             data: events
         });
-    } catch (err) {
-        console.error('Error fetching events:', err);
-        next(err);
+    } catch (error) {
+        console.error('Error enviando eventos:', err);
+        next(error);
     }
 }

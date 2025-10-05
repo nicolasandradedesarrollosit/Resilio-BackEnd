@@ -6,6 +6,7 @@ import refreshRoute from './client/route/refreshRoute.js';
 import googleRoute from './client/route/googleOauthRoute.js';
 import bannerRoute from './client/route/bannerRoute.js';
 import eventsRoute from './client/route/eventsRoutes.js';
+import partnersRoute from './client/route/partnersRoute.js';
 import 'dotenv/config';
 
 const app = express();
@@ -22,6 +23,7 @@ app.use('/api', refreshRoute);
 app.use('/api', googleRoute);
 app.use('/api', bannerRoute);
 app.use('/api', eventsRoute);
+app.use('/api', partnersRoute);
 
 app.use((err, req, res, next) => {
   console.error('Error en request:', {
