@@ -4,7 +4,7 @@ export async function getAllEvents() {
     try{
         const { rows } = await pool.query(
             `SELECT * FROM events
-            ORDER BY event_date DESC`
+            ORDER BY date DESC`
         );
     return rows;
     }
