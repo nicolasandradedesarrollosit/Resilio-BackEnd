@@ -1,4 +1,4 @@
-import { pool } from '../../db.js';
+import { pool } from '../../others/config/db.js';
 
 export async function getAllPartners() {
     try{
