@@ -3,7 +3,8 @@ import {
     findOneByEmail,
     patchVerifiedEmail,
     findOneById,
-    getUserData
+    getUserData,
+    updateUserData
 } from '../model/userModel.js';
 import { 
     hashPassword,
@@ -129,4 +130,44 @@ export async function returnUserData(req, res, next){
     catch (err){
         next(err);
     }
-}   
+}
+
+export async function updateUser(req, res, next) {
+    try {
+        const userId = req.user?.sub;
+        if (!userId) return res.status(401).json({ ok: false, message: 'No autorizado' });
+
+        const { name, province, city, phone_number } = req.body;
+        
+        if (!name && !province && !city && !phone_number) {
+            return res.status(400).json({ ok: false, message: 'No se proporcionaron campos para actualizar' });
+        }
+
+        const exists = await findOneById(userId);
+        if (!exists) return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
+
+        const fieldsToUpdate = {};
+        if (name !== undefined) fieldsToUpdate.name = name;
+        if (province !== undefined) fieldsToUpdate.province = province;
+        if (city !== undefined) fieldsToUpdate.city = city;
+        if (phone_number !== undefined) fieldsToUpdate.phone_number = phone_number;
+
+        const fieldsArray = Object.values(fieldsToUpdate);
+        if (fieldsArray.length > 0) {
+            const verifyFields = validateFieldsRegister(...fieldsArray);
+            if (!verifyFields) {
+                return res.status(400).json({ ok: false, message: 'Error en los campos proporcionados' });
+            }
+        }
+
+        const updatedUser = await updateUserData(userId, fieldsToUpdate);
+
+        return res.status(200).json({ 
+            ok: true, 
+            message: 'Usuario actualizado correctamente', 
+            data: updatedUser 
+        });
+    } catch (err) {
+        next(err);
+    }
+}
