@@ -23,7 +23,8 @@ import {
 import { sendMail } from '../util/mailer.js';
 import { 
     validateFieldsRegister,
-    validateFieldsLogIn
+    validateFieldsLogIn,
+    validateFieldsUpdate
  } from '../util/validateUserFields.js';
 
 const URL_FRONT = process.env.URL_FRONT || 'http:/localhost:5173';
@@ -153,12 +154,10 @@ export async function updateUser(req, res, next) {
         if (phone_number !== undefined) fieldsToUpdate.phone_number = phone_number;
 
         const fieldsArray = Object.values(fieldsToUpdate);
-        if (fieldsArray.length > 0) {
-            const verifyFields = validateFieldsRegister(...fieldsArray);
-            if (!verifyFields) {
-                return res.status(400).json({ ok: false, message: 'Error en los campos proporcionados' });
-            }
-        }
+
+        const isValid = validateFieldsUpdate(fieldsArray);
+
+        if(!isValid) return res.status(400).json({ ok: false, message: 'Error en los campos proporcionados' });
 
         const updatedUser = await updateUserData(userId, fieldsToUpdate);
 

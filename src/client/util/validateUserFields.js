@@ -38,3 +38,27 @@ export async function validateFieldsLogIn(email, password){
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailNormalized) || emailNormalized.length > 254 || password.length > 72 || !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,72}$/.test(password)) return false;
     return true;
 }
+
+export async function validateFieldsUpdate(fields) {
+    const validators = {
+        name: /^[A-Za-zÀÁÉÍÓÚàáéíóúÑñ\s'-]{1,100}$/,
+        province: /^[A-Za-zÀÁÉÍÓÚàáéíóúÑñ\s,'-]{1,100}$/,
+        city: /^[A-Za-zÀÁÉÍÓÚàáéíóúÑñ\s'-]{1,100}$/,
+        phone_number: /^[0-9]{9,15}$/
+    }
+
+    for (const field of fields) {
+        const fieldNormalized = String(field || "").trim();
+        if (!fieldNormalized) return false;
+
+        let isValid = false;
+        for (const [key, regex] of Object.entries(validators)) {
+            if (regex.test(fieldNormalized)) {
+                isValid = true;
+                break;
+            }
+        }
+        if (!isValid) return false;
+    }
+    return true;
+}
