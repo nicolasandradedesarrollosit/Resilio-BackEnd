@@ -135,7 +135,7 @@ export async function returnUserData(req, res, next){
 
 export async function updateUser(req, res, next) {
     try {
-        const userId = req.user?.sub;
+        const userId = req.params.userId;
         if (!userId) return res.status(401).json({ ok: false, message: 'No autorizado' });
 
         const { name, province, city, phone_number } = req.body;

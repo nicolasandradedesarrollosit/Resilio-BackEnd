@@ -13,6 +13,6 @@ r.post('/register', register);
 r.post('/verify-email', verifyEmail);
 r.post('/log-in', logIn);
 r.post('/user-data', returnUserData)
-r.patch('/update-user', updateUser);
+r.patch('/update-user/:userId', updateUser);
 
 export default r;
