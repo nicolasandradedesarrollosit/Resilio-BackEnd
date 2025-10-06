@@ -63,7 +63,7 @@ export async function createUserWithGoogle({ name, email, googleId, role = 'user
      VALUES
       ($1, $2, $3, true, $4, 0, $5, NOW(), NOW(), $6, $7, $8, $9)
      RETURNING id, name, email, phone_number, email_verified, token_version, role, google_id, auth_providers`,
-    [name, email, googleId, role, 'google', hashed, '-', '-', '-' ]
+    [name, email, googleId, role, 'google', hashed, 'No especificado', 'No especificado', 'No especificado' ]
   );
   return rows[0];
 }
