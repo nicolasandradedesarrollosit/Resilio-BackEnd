@@ -7,6 +7,7 @@ import googleRoute from './client/route/googleOauthRoute.js';
 import bannerRoute from './client/route/bannerRoute.js';
 import eventsRoute from './client/route/eventsRoutes.js';
 import partnersRoute from './client/route/partnersRoute.js';
+import pageUserAdminRoute from './admin/route/pageUserRoute.js';
 import 'dotenv/config';
 
 const app = express();
@@ -24,6 +25,7 @@ app.use('/api', googleRoute);
 app.use('/api', bannerRoute);
 app.use('/api', eventsRoute);
 app.use('/api', partnersRoute);
+app.use('/api', pageUserAdminRoute);
 
 app.use((err, req, res, next) => {
   console.error('Error en request:', {
