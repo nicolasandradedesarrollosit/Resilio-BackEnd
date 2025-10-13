@@ -4,6 +4,11 @@ import {verifyAccess} from '../util/tokens.js';
  * Middleware para verificar autenticación mediante access_token en cookie
  */
 export async function requireAuth(req, res, next){
+    // Permitir peticiones OPTIONS sin autenticación (preflight CORS)
+    if (req.method === 'OPTIONS') {
+        return next();
+    }
+    
     try {
         const token = req.cookies?.access_token;
         
@@ -36,6 +41,11 @@ export async function requireAuth(req, res, next){
  * Middleware para verificar que el usuario es admin
  */
 export async function requireAdmin(req, res, next){
+    // Permitir peticiones OPTIONS sin autenticación (preflight CORS)
+    if (req.method === 'OPTIONS') {
+        return next();
+    }
+    
     try {
         const token = req.cookies?.access_token;
         

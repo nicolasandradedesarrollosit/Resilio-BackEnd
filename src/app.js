@@ -43,6 +43,12 @@ app.use(cors({
 app.use(cookieParser()); // CRÍTICO: Parsea las cookies
 app.use(express.json());
 
+// Logging middleware para debug
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+    next();
+});
+
 app.get('/health-check', async (_req, res) => {
     res.status(200).json({ ok: true, message: 'API corriendo en Render 🚀' });
 })
