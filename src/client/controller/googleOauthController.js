@@ -86,9 +86,8 @@ export const googleAuth = async (req, res) => {
     console.log('Usuario ID:', dbUser.id, '| Role:', dbUser.role);
 
     if (isProduction) {
-      const domain = process.env.COOKIE_DOMAIN ? `; Domain=${process.env.COOKIE_DOMAIN}` : '';
-      const accessCookie = `access_token=${accessToken}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${Math.floor(expiresAccess / 1000)}${domain}; Partitioned`;
-      const refreshCookie = `refresh_token=${refreshToken}; HttpOnly; Secure; SameSite=None; Path=/api; Max-Age=${Math.floor(expiresRefresh / 1000)}${domain}; Partitioned`;
+      const accessCookie = `access_token=${accessToken}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${Math.floor(expiresAccess / 1000)}; Partitioned`;
+      const refreshCookie = `refresh_token=${refreshToken}; HttpOnly; Secure; SameSite=None; Path=/api; Max-Age=${Math.floor(expiresRefresh / 1000)}; Partitioned`;
       
       res.setHeader('Set-Cookie', [accessCookie, refreshCookie]);
       console.log('🍪 Cookies configuradas manualmente con Partitioned');
