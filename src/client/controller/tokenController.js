@@ -20,13 +20,15 @@ export async function refreshToken(req, res){
         const newAccess = signJWT(user);
         const expiresAccess = 1000 * 60 * 15;
 
-        res.cookie('access_token', newAccess, {
+        const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: true,
+            sameSite: 'none',
             path: '/',
             maxAge: expiresAccess
-        });
+        };
+
+        res.cookie('access_token', newAccess, cookieOptions);
 
         return res.json({ ok: true, message: 'Token renovado correctamente' });
     }

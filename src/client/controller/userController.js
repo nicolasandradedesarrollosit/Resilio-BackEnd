@@ -94,21 +94,24 @@ export async function logIn(req, res, next){
         const expiresAccess = 1000 * 60 * 15;
         const expiresRefresh = 1000 * 60 * 60 * 24 * 7;
 
-        res.cookie('access_token', accessToken, {
+        const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',       
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: true,
+            sameSite: 'none',
             path: '/',
             maxAge: expiresAccess
-        });
+        };
 
-        res.cookie('refresh_token', refreshToken, {
+        const refreshCookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',       
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: true,
+            sameSite: 'none',
             path: '/api',
             maxAge: expiresRefresh
-        });
+        };
+
+        res.cookie('access_token', accessToken, cookieOptions);
+        res.cookie('refresh_token', refreshToken, refreshCookieOptions);
 
         return res.json({
             ok: true,
@@ -181,19 +184,22 @@ export async function updateUser(req, res, next) {
 
 export async function logOut(req, res, next) {
     try {
-        res.clearCookie('access_token', {
+        const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: true,
+            sameSite: 'none',
             path: '/'
-        });
+        };
 
-        res.clearCookie('refresh_token', {
+        const refreshCookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: true,
+            sameSite: 'none',
             path: '/api'
-        });
+        };
+
+        res.clearCookie('access_token', cookieOptions);
+        res.clearCookie('refresh_token', refreshCookieOptions);
 
         return res.json({ 
             ok: true, 

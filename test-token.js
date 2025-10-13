@@ -1,11 +1,10 @@
 import jwt from 'jsonwebtoken';
 
-// Simula el proceso de firma del token
 const testUser = {
     id: '123456',
 };
 
-const JWT_SECRET = 'tu-secret-de-prueba'; // Usa tu secret real si quieres
+const JWT_SECRET = 'tu-secret-de-prueba';
 
 const payload = {
     sub: testUser.id,
