@@ -10,14 +10,15 @@ export function hashToken(token){
 }
 
 export function signJWT(user){
-    return jwt.sign({
+    const payload = {
         sub: user.id,
-    }, 
-    process.env.JWT_SECRET, 
-    {
+    };
+    
+    const options = {
         expiresIn: '15m',
-    }
-);
+    };
+    
+    return jwt.sign(payload, process.env.JWT_SECRET, options);
 }
 
 export function signRefresh(user){

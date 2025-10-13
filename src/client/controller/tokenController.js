@@ -25,7 +25,3 @@ export async function refreshToken(req, res){
         return res.status(401).json({  ok: false, message: 'Refresh inválido o expirado'});
     }
 }
-
-export async function destroyToken(req, res){
-    
-}
