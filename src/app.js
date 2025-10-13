@@ -18,7 +18,7 @@ const allowedOrigins = [
     'http://localhost:5173', // Desarrollo local
     'http://localhost:3000', // Desarrollo alternativo
     'https://nicolasandradedesarrollosit.github.io', // GitHub Pages
-    process.env.FRONTEND_URL // URL de producción desde variable de entorno
+    process.env.URL_FRONT // URL de producción desde variable de entorno
 ].filter(Boolean); // Elimina valores undefined
 
 app.use(cors({
