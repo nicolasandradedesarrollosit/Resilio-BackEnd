@@ -82,31 +82,33 @@ export const googleAuth = async (req, res) => {
     
     const isProduction = process.env.NODE_ENV === 'production';
     
-    const cookieOptions = {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
-      path: '/',
-      maxAge: expiresAccess,
-      partitioned: isProduction
-    };
-
-    const refreshCookieOptions = {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
-      path: '/api',
-      maxAge: expiresRefresh,
-      partitioned: isProduction
-    };
-    
-    console.log('🍪 Cookie options:', JSON.stringify(cookieOptions, null, 2));
-    
-    res.cookie('access_token', accessToken, cookieOptions);
-    res.cookie('refresh_token', refreshToken, refreshCookieOptions);
-
     console.log('✅ Autenticación Google completada exitosamente');
     console.log('Usuario ID:', dbUser.id, '| Role:', dbUser.role);
+
+    if (isProduction) {
+      // En producción, usar headers manualmente para incluir Partitioned
+      const accessCookie = `access_token=${accessToken}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${Math.floor(expiresAccess / 1000)}; Partitioned`;
+      const refreshCookie = `refresh_token=${refreshToken}; HttpOnly; Secure; SameSite=None; Path=/api; Max-Age=${Math.floor(expiresRefresh / 1000)}; Partitioned`;
+      
+      res.setHeader('Set-Cookie', [accessCookie, refreshCookie]);
+      console.log('🍪 Cookies configuradas manualmente con Partitioned');
+    } else {
+      // En desarrollo, usar res.cookie normal
+      res.cookie('access_token', accessToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: expiresAccess
+      });
+      res.cookie('refresh_token', refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        path: '/api',
+        maxAge: expiresRefresh
+      });
+    }
 
     res.json({
       ok: true,

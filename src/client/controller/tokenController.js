@@ -22,16 +22,18 @@ export async function refreshToken(req, res){
 
         const isProduction = process.env.NODE_ENV === 'production';
 
-        const cookieOptions = {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
-            path: '/',
-            maxAge: expiresAccess,
-            partitioned: isProduction
-        };
-
-        res.cookie('access_token', newAccess, cookieOptions);
+        if (isProduction) {
+            const accessCookie = `access_token=${newAccess}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${Math.floor(expiresAccess / 1000)}; Partitioned`;
+            res.setHeader('Set-Cookie', accessCookie);
+        } else {
+            res.cookie('access_token', newAccess, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'lax',
+                path: '/',
+                maxAge: expiresAccess
+            });
+        }
 
         return res.json({ ok: true, message: 'Token renovado correctamente' });
     }

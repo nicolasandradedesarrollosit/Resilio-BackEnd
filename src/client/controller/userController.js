@@ -96,26 +96,27 @@ export async function logIn(req, res, next){
 
         const isProduction = process.env.NODE_ENV === 'production';
 
-        const cookieOptions = {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
-            path: '/',
-            maxAge: expiresAccess,
-            partitioned: isProduction
-        };
-
-        const refreshCookieOptions = {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
-            path: '/api',
-            maxAge: expiresRefresh,
-            partitioned: isProduction
-        };
-
-        res.cookie('access_token', accessToken, cookieOptions);
-        res.cookie('refresh_token', refreshToken, refreshCookieOptions);
+        if (isProduction) {
+            const accessCookie = `access_token=${accessToken}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${Math.floor(expiresAccess / 1000)}; Partitioned`;
+            const refreshCookie = `refresh_token=${refreshToken}; HttpOnly; Secure; SameSite=None; Path=/api; Max-Age=${Math.floor(expiresRefresh / 1000)}; Partitioned`;
+            
+            res.setHeader('Set-Cookie', [accessCookie, refreshCookie]);
+        } else {
+            res.cookie('access_token', accessToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'lax',
+                path: '/',
+                maxAge: expiresAccess
+            });
+            res.cookie('refresh_token', refreshToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'lax',
+                path: '/api',
+                maxAge: expiresRefresh
+            });
+        }
 
         return res.json({
             ok: true,
@@ -190,24 +191,15 @@ export async function logOut(req, res, next) {
     try {
         const isProduction = process.env.NODE_ENV === 'production';
         
-        const cookieOptions = {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
-            path: '/',
-            partitioned: isProduction
-        };
-
-        const refreshCookieOptions = {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
-            path: '/api',
-            partitioned: isProduction
-        };
-
-        res.clearCookie('access_token', cookieOptions);
-        res.clearCookie('refresh_token', refreshCookieOptions);
+        if (isProduction) {
+            const accessCookie = `access_token=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0; Partitioned`;
+            const refreshCookie = `refresh_token=; HttpOnly; Secure; SameSite=None; Path=/api; Max-Age=0; Partitioned`;
+            
+            res.setHeader('Set-Cookie', [accessCookie, refreshCookie]);
+        } else {
+            res.clearCookie('access_token', { path: '/' });
+            res.clearCookie('refresh_token', { path: '/api' });
+        }
 
         return res.json({ 
             ok: true, 
