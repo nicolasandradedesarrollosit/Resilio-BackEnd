@@ -1,10 +1,6 @@
 import {verifyAccess} from '../util/tokens.js';
 
-/**
- * Middleware para verificar autenticación mediante access_token en cookie
- */
 export async function requireAuth(req, res, next){
-    // Permitir peticiones OPTIONS sin autenticación (preflight CORS)
     if (req.method === 'OPTIONS') {
         return next();
     }
@@ -37,11 +33,7 @@ export async function requireAuth(req, res, next){
     }
 }
 
-/**
- * Middleware para verificar que el usuario es admin
- */
 export async function requireAdmin(req, res, next){
-    // Permitir peticiones OPTIONS sin autenticación (preflight CORS)
     if (req.method === 'OPTIONS') {
         return next();
     }
@@ -58,14 +50,11 @@ export async function requireAdmin(req, res, next){
         
         const payload = verifyAccess(token);
         
-        // Aquí deberías verificar el rol desde la base de datos
-        // Por ahora asumimos que el payload tiene el rol
         req.user = {
             id: payload.sub,
             tokenVersion: payload.version
         };
         
-        // Verificar rol de admin (esto debería consultarse en la BD)
         const { findOneById } = await import('../model/userModel.js');
         const user = await findOneById(payload.sub);
         

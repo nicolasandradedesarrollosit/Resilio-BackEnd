@@ -18,9 +18,8 @@ export async function refreshToken(req, res){
         if(payload.version !== user.token_version) return res.status(401).json({ ok: false, message: 'Refresh token inválido' });
 
         const newAccess = signJWT(user);
-        const expiresAccess = 1000 * 60 * 15; // 15 minutos
+        const expiresAccess = 1000 * 60 * 15;
 
-        // Enviar nuevo access_token por cookie
         res.cookie('access_token', newAccess, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',

@@ -13,17 +13,15 @@ import 'dotenv/config';
 
 const app = express();
 
-// Configuración de CORS para cookies
 const allowedOrigins = [
-    'http://localhost:5173', // Desarrollo local
-    'http://localhost:3000', // Desarrollo alternativo
-    'https://nicolasandradedesarrollosit.github.io', // GitHub Pages
-    process.env.URL_FRONT // URL de producción desde variable de entorno
-].filter(Boolean); // Elimina valores undefined
+    'http://localhost:5173',
+    'http://localhost:3000', 
+    'https://nicolasandradedesarrollosit.github.io',
+    process.env.URL_FRONT 
+].filter(Boolean);
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Permitir peticiones sin origin (mobile apps, Postman, etc.)
         if (!origin) return callback(null, true);
         
         if (allowedOrigins.indexOf(origin) !== -1) {
@@ -33,17 +31,16 @@ app.use(cors({
             callback(new Error('No permitido por CORS'));
         }
     },
-    credentials: true, // CRÍTICO: Permite envío de cookies
+    credentials: true, 
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['Set-Cookie'],
-    maxAge: 86400 // Cache preflight por 24 horas
+    maxAge: 86400 
 }));
 
-app.use(cookieParser()); // CRÍTICO: Parsea las cookies
+app.use(cookieParser()); 
 app.use(express.json());
 
-// Logging middleware para debug
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
     next();
@@ -62,7 +59,6 @@ app.use('/api', eventsRoute);
 app.use('/api', partnersRoute);
 app.use('/api', pageUserAdminRoute);
 
-// Manejador de errores global - DEBE estar después de las rutas
 app.use((err, req, res, next) => {
   console.error('Error en request:', {
     path: req.path,
@@ -73,7 +69,6 @@ app.use((err, req, res, next) => {
     stack: err.stack
   });
   
-  // Asegurar que los headers CORS estén presentes incluso en errores
   const origin = req.headers.origin;
   if (origin && allowedOrigins.indexOf(origin) !== -1) {
     res.header('Access-Control-Allow-Origin', origin);

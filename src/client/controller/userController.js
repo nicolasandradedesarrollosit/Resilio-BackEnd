@@ -91,11 +91,9 @@ export async function logIn(req, res, next){
 
         const accessToken = signJWT(user);
         const refreshToken = signRefresh(user);
-        
-        const expiresAccess = 1000 * 60 * 15; // 15 minutos
-        const expiresRefresh = 1000 * 60 * 60 * 24 * 7; // 7 días
+        const expiresAccess = 1000 * 60 * 15;
+        const expiresRefresh = 1000 * 60 * 60 * 24 * 7;
 
-        // Enviar access_token por cookie
         res.cookie('access_token', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',       
@@ -104,7 +102,6 @@ export async function logIn(req, res, next){
             maxAge: expiresAccess
         });
 
-        // Enviar refresh_token por cookie
         res.cookie('refresh_token', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',       
@@ -125,7 +122,6 @@ export async function logIn(req, res, next){
 
 export async function returnUserData(req, res, next){
     try{
-        // El ID del usuario viene del middleware requireAuth
         const userId = req.user?.id;
         
         if(!userId) return res.status(401).json({ ok: false, message: 'No autenticado' });
@@ -146,7 +142,6 @@ export async function returnUserData(req, res, next){
 
 export async function updateUser(req, res, next) {
     try {
-        // El ID del usuario viene del middleware requireAuth
         const userId = req.user?.id;
         
         if (!userId) return res.status(401).json({ ok: false, message: 'No autenticado' });
@@ -184,12 +179,8 @@ export async function updateUser(req, res, next) {
     }
 }
 
-/**
- * Cierra sesión limpiando las cookies
- */
 export async function logOut(req, res, next) {
     try {
-        // Limpiar ambas cookies
         res.clearCookie('access_token', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
