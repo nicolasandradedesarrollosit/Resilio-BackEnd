@@ -9,12 +9,17 @@ export async function requireAuth(req, res, next){
         const token = req.cookies?.access_token;
         
         if (!token) {
-            console.log('requireAuth: No token found in cookies');
+            console.log('❌ requireAuth: No token found');
+            console.log('📦 Cookies recibidas:', Object.keys(req.cookies || {}));
+            console.log('🌐 Origin:', req.headers.origin);
+            console.log('🔍 User-Agent:', req.headers['user-agent']);
             return res.status(401).json({ 
                 ok: false, 
                 message: 'No autenticado' 
             });
         }
+        
+        console.log('✅ Token encontrado, verificando...');
         
         const payload = verifyAccess(token);
         
