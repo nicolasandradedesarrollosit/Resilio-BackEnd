@@ -56,13 +56,28 @@ app.use('/api', eventsRoute);
 app.use('/api', partnersRoute);
 app.use('/api', pageUserAdminRoute);
 
+// Manejador de errores global - DEBE estar después de las rutas
 app.use((err, req, res, next) => {
   console.error('Error en request:', {
     path: req.path,
+    method: req.method,
+    origin: req.headers.origin,
     body: req.body,
-    error: err.stack
+    error: err.message,
+    stack: err.stack
   });
-  res.status(500).json({ message: 'Error interno del servidor' });
+  
+  // Asegurar que los headers CORS estén presentes incluso en errores
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.indexOf(origin) !== -1) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', 'true');
+  }
+  
+  res.status(500).json({ 
+    ok: false, 
+    message: 'Error interno del servidor' 
+  });
 });
 
 export default app;

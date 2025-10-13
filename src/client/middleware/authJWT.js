@@ -8,6 +8,7 @@ export async function requireAuth(req, res, next){
         const token = req.cookies?.access_token;
         
         if (!token) {
+            console.log('requireAuth: No token found in cookies');
             return res.status(401).json({ 
                 ok: false, 
                 message: 'No autenticado' 
@@ -23,6 +24,7 @@ export async function requireAuth(req, res, next){
         
         next();
     } catch (error) {
+        console.error('requireAuth error:', error.message);
         return res.status(401).json({ 
             ok: false, 
             message: 'Token inválido o expirado' 
