@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import userRoute from './client/route/userRoute.js';
 import passwordRoute from './client/route/recoverPasswordRoute.js';
 import refreshRoute from './client/route/refreshRoute.js';
@@ -11,7 +12,35 @@ import pageUserAdminRoute from './admin/route/pageUserRoute.js';
 import 'dotenv/config';
 
 const app = express();
-app.use(cors());
+
+// Configuración de CORS para cookies
+const allowedOrigins = [
+    'http://localhost:5173', // Desarrollo local
+    'http://localhost:3000', // Desarrollo alternativo
+    'https://nicolasandradedesarrollosit.github.io', // GitHub Pages
+    process.env.FRONTEND_URL // URL de producción desde variable de entorno
+].filter(Boolean); // Elimina valores undefined
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Permitir peticiones sin origin (mobile apps, Postman, etc.)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            console.warn('Origen bloqueado por CORS:', origin);
+            callback(new Error('No permitido por CORS'));
+        }
+    },
+    credentials: true, // CRÍTICO: Permite envío de cookies
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Set-Cookie'],
+    maxAge: 86400 // Cache preflight por 24 horas
+}));
+
+app.use(cookieParser()); // CRÍTICO: Parsea las cookies
 app.use(express.json());
 
 app.get('/health-check', async (_req, res) => {
