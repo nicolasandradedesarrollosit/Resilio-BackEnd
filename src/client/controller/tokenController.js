@@ -18,8 +18,19 @@ export async function refreshToken(req, res){
         if(payload.version !== user.token_version) return res.status(401).json({ ok: false, message: 'Refresh token inválido' });
 
         const newAccess = signJWT(user);
+        const expiresAccess = 1000 * 60 * 15; // 15 minutos
 
-        return res.json({ ok: true, data: { accessToken: newAccess } });
+        // Enviar nuevo access_token por cookie
+        res.cookie('access_token', newAccess, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
+            path: '/',
+            maxAge: expiresAccess
+        });
+
+        return res.json({ ok: true, message: 'Token renovado correctamente' });
     }
     catch{
         return res.status(401).json({  ok: false, message: 'Refresh inválido o expirado'});

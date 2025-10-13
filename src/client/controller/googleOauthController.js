@@ -61,8 +61,20 @@ export const googleAuth = async (req, res) => {
       token_version: dbUser.token_version ?? 0
     });
 
-    const expiresRefresh = 1000 * 60 * 60 * 24 * 7; 
+    const expiresAccess = 1000 * 60 * 15; // 15 minutos
+    const expiresRefresh = 1000 * 60 * 60 * 24 * 7; // 7 días
 
+    // Enviar access_token por cookie
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
+      path: '/',
+      maxAge: expiresAccess
+    });
+
+    // Enviar refresh_token por cookie
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -73,7 +85,8 @@ export const googleAuth = async (req, res) => {
     });
 
     res.json({
-      accessToken
+      ok: true,
+      message: 'Autenticación exitosa'
     });
 
   } catch (error) {

@@ -91,8 +91,21 @@ export async function logIn(req, res, next){
 
         const accessToken = signJWT(user);
         const refreshToken = signRefresh(user);
-        const expiresRefresh = 1000 * 60 * 60 * 24 * 7;
+        
+        const expiresAccess = 1000 * 60 * 15; // 15 minutos
+        const expiresRefresh = 1000 * 60 * 60 * 24 * 7; // 7 días
 
+        // Enviar access_token por cookie
+        res.cookie('access_token', accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',       
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
+            path: '/',
+            maxAge: expiresAccess
+        });
+
+        // Enviar refresh_token por cookie
         res.cookie('refresh_token', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',       
@@ -104,9 +117,7 @@ export async function logIn(req, res, next){
 
         return res.json({
             ok: true,
-            data: {
-                accessToken
-            }
+            message: 'Inicio de sesión exitoso'
         })
     }
     catch(err){
@@ -116,8 +127,10 @@ export async function logIn(req, res, next){
 
 export async function returnUserData(req, res, next){
     try{
-        const { userId } = req.body;
-        if(!userId) return res.status(400).json({ ok: false, message: 'Error de credenciales' });
+        // El ID del usuario viene del middleware requireAuth
+        const userId = req.user?.id;
+        
+        if(!userId) return res.status(401).json({ ok: false, message: 'No autenticado' });
         
         const exists = await findOneById(userId);
         if(!exists) return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
@@ -135,8 +148,10 @@ export async function returnUserData(req, res, next){
 
 export async function updateUser(req, res, next) {
     try {
-        const userId = req.params.userId;
-        if (!userId) return res.status(401).json({ ok: false, message: 'No autorizado' });
+        // El ID del usuario viene del middleware requireAuth
+        const userId = req.user?.id;
+        
+        if (!userId) return res.status(401).json({ ok: false, message: 'No autenticado' });
 
         const { name, province, city, phone_number } = req.body;
         
@@ -165,6 +180,37 @@ export async function updateUser(req, res, next) {
             ok: true, 
             message: 'Usuario actualizado correctamente', 
             data: updatedUser 
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+/**
+ * Cierra sesión limpiando las cookies
+ */
+export async function logOut(req, res, next) {
+    try {
+        // Limpiar ambas cookies
+        res.clearCookie('access_token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
+            path: '/'
+        });
+
+        res.clearCookie('refresh_token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
+            path: '/api'
+        });
+
+        return res.json({ 
+            ok: true, 
+            message: 'Sesión cerrada correctamente' 
         });
     } catch (err) {
         next(err);
