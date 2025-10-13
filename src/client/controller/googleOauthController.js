@@ -80,21 +80,27 @@ export const googleAuth = async (req, res) => {
     console.log('🍪 Configurando cookies...');
     console.log('Environment:', process.env.NODE_ENV);
     
+    const isProduction = process.env.NODE_ENV === 'production';
+    
     const cookieOptions = {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       path: '/',
-      maxAge: expiresAccess
+      maxAge: expiresAccess,
+      partitioned: isProduction
     };
 
     const refreshCookieOptions = {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       path: '/api',
-      maxAge: expiresRefresh
+      maxAge: expiresRefresh,
+      partitioned: isProduction
     };
+    
+    console.log('🍪 Cookie options:', JSON.stringify(cookieOptions, null, 2));
     
     res.cookie('access_token', accessToken, cookieOptions);
     res.cookie('refresh_token', refreshToken, refreshCookieOptions);

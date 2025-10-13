@@ -94,20 +94,24 @@ export async function logIn(req, res, next){
         const expiresAccess = 1000 * 60 * 15;
         const expiresRefresh = 1000 * 60 * 60 * 24 * 7;
 
+        const isProduction = process.env.NODE_ENV === 'production';
+
         const cookieOptions = {
             httpOnly: true,
-            secure: true,
-            sameSite: 'none',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             path: '/',
-            maxAge: expiresAccess
+            maxAge: expiresAccess,
+            partitioned: isProduction
         };
 
         const refreshCookieOptions = {
             httpOnly: true,
-            secure: true,
-            sameSite: 'none',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             path: '/api',
-            maxAge: expiresRefresh
+            maxAge: expiresRefresh,
+            partitioned: isProduction
         };
 
         res.cookie('access_token', accessToken, cookieOptions);
@@ -184,18 +188,22 @@ export async function updateUser(req, res, next) {
 
 export async function logOut(req, res, next) {
     try {
+        const isProduction = process.env.NODE_ENV === 'production';
+        
         const cookieOptions = {
             httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            path: '/'
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
+            path: '/',
+            partitioned: isProduction
         };
 
         const refreshCookieOptions = {
             httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            path: '/api'
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
+            path: '/api',
+            partitioned: isProduction
         };
 
         res.clearCookie('access_token', cookieOptions);

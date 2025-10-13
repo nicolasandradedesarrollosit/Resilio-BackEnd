@@ -20,12 +20,15 @@ export async function refreshToken(req, res){
         const newAccess = signJWT(user);
         const expiresAccess = 1000 * 60 * 15;
 
+        const isProduction = process.env.NODE_ENV === 'production';
+
         const cookieOptions = {
             httpOnly: true,
-            secure: true,
-            sameSite: 'none',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             path: '/',
-            maxAge: expiresAccess
+            maxAge: expiresAccess,
+            partitioned: isProduction
         };
 
         res.cookie('access_token', newAccess, cookieOptions);
