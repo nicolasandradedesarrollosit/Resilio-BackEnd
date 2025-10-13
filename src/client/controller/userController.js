@@ -100,7 +100,6 @@ export async function logIn(req, res, next){
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',       
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
             path: '/',
             maxAge: expiresAccess
         });
@@ -110,7 +109,6 @@ export async function logIn(req, res, next){
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',       
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
             path: '/api',
             maxAge: expiresRefresh
         });
@@ -196,7 +194,6 @@ export async function logOut(req, res, next) {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
             path: '/'
         });
 
@@ -204,7 +201,6 @@ export async function logOut(req, res, next) {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
             path: '/api'
         });
 

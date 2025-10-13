@@ -69,7 +69,6 @@ export const googleAuth = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
       path: '/',
       maxAge: expiresAccess
     });
@@ -79,7 +78,6 @@ export const googleAuth = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined,
       path: '/api',
       maxAge: expiresRefresh
     });
