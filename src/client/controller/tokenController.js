@@ -29,7 +29,7 @@ export async function refreshToken(req, res){
             res.cookie('access_token', newAccess, {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'lax',
+                sameSite: 'None',
                 path: '/',
                 maxAge: expiresAccess
             });
