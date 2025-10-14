@@ -104,15 +104,15 @@ export async function logIn(req, res, next){
         } else {
             res.cookie('access_token', accessToken, {
                 httpOnly: true,
-                secure: false,
-                sameSite: 'lax',
+                secure: true,
+                sameSite: 'None',
                 path: '/',
                 maxAge: expiresAccess
             });
             res.cookie('refresh_token', refreshToken, {
                 httpOnly: true,
-                secure: false,
-                sameSite: 'lax',
+                secure: true,
+                sameSite: 'None',
                 path: '/api',
                 maxAge: expiresRefresh
             });
