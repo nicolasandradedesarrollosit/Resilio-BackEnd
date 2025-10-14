@@ -80,7 +80,7 @@ export const googleAuth = async (req, res) => {
     console.log('🍪 Configurando cookies...');
     console.log('Environment:', process.env.NODE_ENV);
     
-    const isProduction = process.env.NODE_ENV === 'production';
+    const isProduction = false;
     
     console.log('✅ Autenticación Google completada exitosamente');
     console.log('Usuario ID:', dbUser.id, '| Role:', dbUser.role);
@@ -94,15 +94,15 @@ export const googleAuth = async (req, res) => {
     } else {
       res.cookie('access_token', accessToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
+        secure: true,
+        sameSite: 'None',
         path: '/',
         maxAge: expiresAccess
       });
       res.cookie('refresh_token', refreshToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
+        secure: true,
+        sameSite: 'None',
         path: '/api',
         maxAge: expiresRefresh
       });

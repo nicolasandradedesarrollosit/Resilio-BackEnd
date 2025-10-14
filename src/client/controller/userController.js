@@ -94,7 +94,7 @@ export async function logIn(req, res, next){
         const expiresAccess = 1000 * 60 * 15;
         const expiresRefresh = 1000 * 60 * 60 * 24 * 7;
 
-        const isProduction = process.env.NODE_ENV === 'production';
+        const isProduction = false;
 
         if (isProduction) {
             const accessCookie = `access_token=${accessToken}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${Math.floor(expiresAccess / 1000)}; Partitioned`;
