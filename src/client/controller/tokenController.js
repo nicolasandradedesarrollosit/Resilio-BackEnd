@@ -28,7 +28,7 @@ export async function refreshToken(req, res){
         } else {
             res.cookie('access_token', newAccess, {
                 httpOnly: true,
-                secure: false,
+                secure: true,
                 sameSite: 'lax',
                 path: '/',
                 maxAge: expiresAccess
