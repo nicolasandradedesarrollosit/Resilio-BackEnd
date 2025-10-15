@@ -42,7 +42,7 @@ export async function updateUserData(userId, fieldsToUpdate) {
 export async function banUserModel (id) {
     const { rows } = await pool.query(`
         UPDATE users
-        SET banned = true
+        SET is_banned = true
         WHERE id = $1`, 
         [id]);
     return rows[0];
