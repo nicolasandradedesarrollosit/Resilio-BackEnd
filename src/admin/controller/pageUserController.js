@@ -33,9 +33,9 @@ export async function updateUser(req, res, next) {
         const userId = req.params.userId;
         if (!userId) return res.status(401).json({ ok: false, message: 'No autorizado' });
 
-        const { name, province, city, phone_number } = req.body;
-        
-        if (!name && !province && !city && !phone_number) {
+        const { name, province, city, phone_number, role } = req.body;
+
+        if (!name && !province && !city && !phone_number && !role) {
             return res.status(400).json({ ok: false, message: 'No se proporcionaron campos para actualizar' });
         }
 
@@ -47,6 +47,7 @@ export async function updateUser(req, res, next) {
         if (province !== undefined) fieldsToUpdate.province = province;
         if (city !== undefined) fieldsToUpdate.city = city;
         if (phone_number !== undefined) fieldsToUpdate.phone_number = phone_number;
+        if (role !== undefined) fieldsToUpdate.role = role;
 
         const fieldsArray = Object.values(fieldsToUpdate);
 

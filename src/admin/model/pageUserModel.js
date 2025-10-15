@@ -10,7 +10,7 @@ export async function getUserModelLimit(limit, offset) {
 }
 
 export async function updateUserData(userId, fieldsToUpdate) {
-  const allowedFields = ['name', 'province', 'city', 'phone_number'];
+  const allowedFields = ['name', 'province', 'city', 'phone_number', 'role'];
   const fields = [];
   const values = [];
   let paramIndex = 1;
