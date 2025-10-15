@@ -1,7 +1,7 @@
 import {
     getUserModelLimit,
     updateUserData,
-    banUserModel
+    banUnbanUserModel
 } from '../model/pageUserModel.js';
 import { 
     validateUserReq
@@ -74,12 +74,9 @@ export async function banUser (req, res, next) {
         const exists = await findOneById(userId);
         if (!exists) return res.status(404).json({ ok: false, message: 'Usuario no encontrado' });
 
-        const bannedUser = await banUserModel(userId);
-        if (!bannedUser) {
-            return res.status(500).json({ ok: false, message: 'No se pudo banear al usuario' });
-        }
+        await banUnbanUserModel(userId);
 
-        return res.status(200).json({ ok: true, message: 'Usuario baneado correctamente' });
+        return res.status(200).json({ ok: true, message: 'Estado de usuario actualizado correctamente' });
     }
     catch (err) {
         next(err);
