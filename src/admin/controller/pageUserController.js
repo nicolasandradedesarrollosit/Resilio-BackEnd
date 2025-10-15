@@ -79,7 +79,7 @@ export async function banUser (req, res, next) {
             return res.status(500).json({ ok: false, message: 'No se pudo banear al usuario' });
         }
 
-        return res.status(200).json({ ok: true, message: 'Usuario baneado correctamente', data: bannedUser });
+        return res.status(200).json({ ok: true, message: 'Usuario baneado correctamente' });
     }
     catch (err) {
         next(err);
