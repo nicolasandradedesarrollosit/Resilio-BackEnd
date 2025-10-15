@@ -68,7 +68,7 @@ export async function updateUser(req, res, next) {
 
 export async function banUser (req, res, next) {
     try {
-        const { userId } = req.body;
+        const { userId } = req.params;
         if (!userId) return res.status(400).json({ ok: false, message: 'ID de usuario no proporcionado' });
 
         const exists = await findOneById(userId);
