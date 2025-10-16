@@ -13,10 +13,8 @@ const r = Router();
 
 r.get("/admin/events", requireAdmin, getEventsController);
 r.post("/admin/events", requireAdmin, createEventController);
-r.put("/admin/events/:id", requireAdmin, updateEventController);
+r.patch("/admin/events/:id", requireAdmin, updateEventController);
 r.delete("/admin/events/:id", requireAdmin, deleteEventController);
-
-// Ruta para subir imagen de evento
 r.post("/admin/events/upload-image", requireAdmin, uploadEventImage.single('image'), uploadEventImageController);
 
 export default r;

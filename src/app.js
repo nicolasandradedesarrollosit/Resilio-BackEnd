@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import userRoute from './client/route/userRoute.js';
@@ -68,6 +69,27 @@ app.use('/api', eventsRoute);
 app.use('/api', partnersRoute);
 app.use('/api', pageUserAdminRoute);
 app.use('/api', pageEventsRoute);
+
+// Middleware para manejar errores de Multer
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    // Error de Multer
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ 
+        error: 'El archivo es demasiado grande. Máximo 5MB permitido.' 
+      });
+    }
+    return res.status(400).json({ 
+      error: `Error al subir archivo: ${err.message}` 
+    });
+  } else if (err && err.message && err.message.includes('Tipo de archivo no permitido')) {
+    // Error personalizado de validación de tipo de archivo
+    return res.status(400).json({ 
+      error: err.message 
+    });
+  }
+  next(err);
+});
 
 app.use((err, req, res, next) => {
   console.error('Error en request:', {

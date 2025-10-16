@@ -6,6 +6,7 @@ import {
 } from "../model/pageEventsModel.js";
 import { validateUserReq } from "../util/validateUserReq.js";
 import { validateEventReq, validatePartialEventReq } from "../util/validateEventReq.js";
+import { uploadToSupabase, deleteFromSupabase } from "../util/supabaseStorage.js";
 
 export async function getEventsController(req, res, next) {
     try {
@@ -87,15 +88,19 @@ export async function uploadEventImageController(req, res, next) {
             return res.status(400).json({ error: 'No se ha proporcionado ninguna imagen.' });
         }
 
-        const imageUrl = `${req.protocol}://${req.get('host')}/uploads/events/${req.file.filename}`;
+        // Subir a Supabase Storage en lugar del sistema de archivos local
+        const result = await uploadToSupabase(req.file, 'events');
 
         res.status(200).json({
             message: 'Imagen subida exitosamente',
-            filename: req.file.filename,
-            url: imageUrl,
-            path: req.file.path
+            filename: result.path,
+            url: result.url
         });
     } catch (err) {
-        next(err);
+        console.error('Error al subir imagen:', err);
+        res.status(500).json({ 
+            error: 'Error al subir la imagen',
+            details: err.message 
+        });
     }
 }

@@ -44,6 +44,9 @@ Thumbs.db
 # TypeScript
 *.tsbuildinfo
 
-# Archivos subidos por usuarios
-uploads/
+# Archivos subidos por usuarios (mantener estructura de carpetas)
+uploads/*
 !uploads/.gitkeep
+!uploads/events/
+uploads/events/*
+!uploads/events/.gitkeep
