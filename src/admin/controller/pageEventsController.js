@@ -88,12 +88,22 @@ export async function deleteEventController(req, res, next) {
 
 export async function uploadEventImageController(req, res, next) {
     try {
+        console.log('📝 Datos recibidos:', {
+            hasBody: !!req.body,
+            bodyKeys: req.body ? Object.keys(req.body) : [],
+            hasImage: !!req.body?.image,
+            hasFileName: !!req.body?.fileName,
+            hasMimeType: !!req.body?.mimeType,
+            imageLength: req.body?.image?.length
+        });
+
         const allowedMimes = ['image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml', 'image/png', 'image/gif'];
         const maxSize = 5 * 1024 * 1024;
 
-        if (!req.body.image || !req.body.fileName || !req.body.mimeType) {
+        if (!req.body || !req.body.image || !req.body.fileName || !req.body.mimeType) {
             return res.status(400).json({ 
-                error: 'Faltan datos requeridos. Se necesita: image (base64), fileName y mimeType.' 
+                error: 'Faltan datos requeridos. Se necesita: image (base64), fileName y mimeType.',
+                received: req.body ? Object.keys(req.body) : []
             });
         }
 
@@ -103,7 +113,12 @@ export async function uploadEventImageController(req, res, next) {
             });
         }
 
-        const base64Data = req.body.image.replace(/^data:image\/\w+;base64,/, '');
+        // Limpiar el base64 (eliminar data:image/...;base64, si existe)
+        let base64Data = req.body.image;
+        if (base64Data.includes('base64,')) {
+            base64Data = base64Data.split('base64,')[1];
+        }
+
         const fileBuffer = Buffer.from(base64Data, 'base64');
 
         if (fileBuffer.length > maxSize) {
@@ -112,6 +127,12 @@ export async function uploadEventImageController(req, res, next) {
             });
         }
 
+        console.log('📤 Subiendo a Supabase...', {
+            fileName: req.body.fileName,
+            mimeType: req.body.mimeType,
+            bufferSize: fileBuffer.length
+        });
+
         const result = await uploadToSupabase(
             fileBuffer, 
             req.body.fileName, 
@@ -119,13 +140,19 @@ export async function uploadEventImageController(req, res, next) {
             'events'
         );
 
+        console.log('✅ Imagen subida exitosamente:', result);
+
         res.status(200).json({
             message: 'Imagen subida exitosamente',
             filename: result.path,
             url: result.url
         });
     } catch (err) {
-        console.error('Error al subir imagen:', err);
+        console.error('❌ Error al subir imagen:', {
+            message: err.message,
+            stack: err.stack,
+            body: req.body ? Object.keys(req.body) : 'no body'
+        });
         res.status(500).json({ 
             error: 'Error al subir la imagen',
             details: err.message 

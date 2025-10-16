@@ -31,7 +31,7 @@ export async function uploadToSupabase(fileBuffer, originalName, mimeType, folde
         }
 
         const { data: { publicUrl } } = supabase.storage
-            .from('Images-Resilio')
+            .from('Images-Events')
             .getPublicUrl(data.path);
 
         return {

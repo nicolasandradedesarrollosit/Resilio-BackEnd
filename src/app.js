@@ -45,7 +45,8 @@ app.use(cors({
 }));
 
 app.use(cookieParser()); 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Aumentar límite para imágenes en base64
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Servir archivos estáticos (imágenes subidas)
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
@@ -69,20 +70,9 @@ app.use('/api', partnersRoute);
 app.use('/api', pageUserAdminRoute);
 app.use('/api', pageEventsRoute);
 
-// Middleware para manejar errores de Multer
+// Middleware para manejar errores personalizados
 app.use((err, req, res, next) => {
-  if (err instanceof multer.MulterError) {
-    // Error de Multer
-    if (err.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ 
-        error: 'El archivo es demasiado grande. Máximo 5MB permitido.' 
-      });
-    }
-    return res.status(400).json({ 
-      error: `Error al subir archivo: ${err.message}` 
-    });
-  } else if (err && err.message && err.message.includes('Tipo de archivo no permitido')) {
-    // Error personalizado de validación de tipo de archivo
+  if (err && err.message && err.message.includes('Tipo de archivo no permitido')) {
     return res.status(400).json({ 
       error: err.message 
     });
