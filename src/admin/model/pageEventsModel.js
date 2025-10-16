@@ -12,8 +12,8 @@ export async function getEventsModelimit(limit, offset) {
 export async function createEventModel(eventData) {
     const { name, description, location, date, url_passline, url_image } = eventData;
     const { rows } = await pool.query(`
-        INSERT INTO events (name, description, location, date, url_passline, url_image_event, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+        INSERT INTO events (name, description, location, date, url_passline, url_image_event)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING id`, 
         [name, description, location, date, url_passline, url_image]);
     return rows[0];
