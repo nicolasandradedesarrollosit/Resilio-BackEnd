@@ -3,25 +3,25 @@ import 'dotenv/config';
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY // Usa el service key para el backend
+    process.env.SUPABASE_SERVICE_KEY 
 );
 
 /**
- * Sube una imagen a Supabase Storage
- * @param {Object} file - Archivo de multer (req.file)
- * @param {string} bucket - Nombre del bucket (ej: 'events')
+ * @param {Buffer} fileBuffer
+ * @param {string} originalName
+ * @param {string} mimeType
+ * @param {string} folder 
  * @returns {Promise<{url: string, path: string}>}
  */
-export async function uploadToSupabase(file, bucket = 'events') {
+export async function uploadToSupabase(fileBuffer, originalName, mimeType, folder = 'events') {
     try {
-        const fileName = `${Date.now()}-${file.originalname}`;
-        const filePath = `events/${fileName}`;
+        const fileName = `${Date.now()}-${originalName}`;
+        const filePath = `${folder}/${fileName}`;
 
-        // Subir archivo a Supabase Storage
         const { data, error } = await supabase.storage
-            .from(bucket)
-            .upload(filePath, file.buffer, {
-                contentType: file.mimetype,
+            .from('Images-Events')
+            .upload(filePath, fileBuffer, {
+                contentType: mimeType,
                 cacheControl: '3600',
                 upsert: false
             });
@@ -30,9 +30,8 @@ export async function uploadToSupabase(file, bucket = 'events') {
             throw error;
         }
 
-        // Obtener URL pública
         const { data: { publicUrl } } = supabase.storage
-            .from(bucket)
+            .from('Images-Resilio')
             .getPublicUrl(data.path);
 
         return {
@@ -46,14 +45,12 @@ export async function uploadToSupabase(file, bucket = 'events') {
 }
 
 /**
- * Elimina una imagen de Supabase Storage
- * @param {string} filePath - Ruta del archivo en storage
- * @param {string} bucket - Nombre del bucket
+ * @param {string} filePath
  */
-export async function deleteFromSupabase(filePath, bucket = 'events') {
+export async function deleteFromSupabase(filePath) {
     try {
         const { error } = await supabase.storage
-            .from(bucket)
+            .from('Images-Events')
             .remove([filePath]);
 
         if (error) {
