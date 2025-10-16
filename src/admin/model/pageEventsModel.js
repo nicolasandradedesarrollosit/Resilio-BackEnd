@@ -12,7 +12,7 @@ export async function getEventsModelimit(limit, offset) {
 export async function createEventModel(eventData) {
     const { name, description, location, date, url_passline, url_image } = eventData;
     const { rows } = await pool.query(`
-        INSERT INTO events (name, description, location, date, url_passline, url_image, created_at, updated_at)
+        INSERT INTO events (name, description, location, date, url_passline, url_image_event, created_at, updated_at)
         VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
         RETURNING id`, 
         [name, description, location, date, url_passline, url_image]);
@@ -20,7 +20,7 @@ export async function createEventModel(eventData) {
 }
 
 export async function updateEventModel(userId, fieldsToUpdate) {
-    const allowedFields = ['name', 'description', 'location', 'date', 'url_passline', 'url_image'];
+    const allowedFields = ['name', 'description', 'location', 'date', 'url_passline', 'url_image_event'];
     const fields = [];
     const values = [];
     let paramIndex = 1;
@@ -41,7 +41,7 @@ export async function updateEventModel(userId, fieldsToUpdate) {
         SET ${fields.join(',\n        ')},
             updated_at = NOW()
         WHERE id = $${paramIndex}
-        RETURNING name, description, location, date, url_passline, url_image`;
+        RETURNING name, description, location, date, url_passline, url_image_event`;
 
     values.push(userId);
 
