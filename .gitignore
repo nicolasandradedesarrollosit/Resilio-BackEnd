@@ -43,3 +43,7 @@ Thumbs.db
 
 # TypeScript
 *.tsbuildinfo
+
+# Archivos subidos por usuarios
+uploads/
+!uploads/.gitkeep

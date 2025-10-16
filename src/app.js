@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import userRoute from './client/route/userRoute.js';
 import passwordRoute from './client/route/recoverPasswordRoute.js';
 import refreshRoute from './client/route/refreshRoute.js';
@@ -9,7 +11,11 @@ import bannerRoute from './client/route/bannerRoute.js';
 import eventsRoute from './client/route/eventsRoutes.js';
 import partnersRoute from './client/route/partnersRoute.js';
 import pageUserAdminRoute from './admin/route/pageUserRoute.js';
+import pageEventsRoute from './admin/route/pageEventsRoute.js';
 import 'dotenv/config';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -41,6 +47,9 @@ app.use(cors({
 app.use(cookieParser()); 
 app.use(express.json());
 
+// Servir archivos estáticos (imágenes subidas)
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
     next();
@@ -58,6 +67,7 @@ app.use('/api', bannerRoute);
 app.use('/api', eventsRoute);
 app.use('/api', partnersRoute);
 app.use('/api', pageUserAdminRoute);
+app.use('/api', pageEventsRoute);
 
 app.use((err, req, res, next) => {
   console.error('Error en request:', {
