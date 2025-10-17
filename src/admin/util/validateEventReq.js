@@ -1,5 +1,5 @@
 export function validateEventReq(eventData) {
-    const { name, description, location, date, url_passline, url_image } = eventData;
+    const { name, description, location, date, url_passline, url_image_event } = eventData;
     const errors = [];
 
     if (!name || typeof name !== 'string' || name.trim() === '') {
@@ -17,7 +17,7 @@ export function validateEventReq(eventData) {
     if (url_passline && (typeof url_passline !== 'string' || !/^https?:\/\/.+/.test(url_passline))) {
         errors.push('URL Passline must be a valid URL if provided.');
     }
-    if (url_image && (typeof url_image !== 'string' || !/^https?:\/\/.+/.test(url_image))) {
+    if (url_image_event && (typeof url_image_event !== 'string' || !/^https?:\/\/.+/.test(url_image_event))) {
         errors.push('URL Image must be a valid URL if provided.');
     }
 

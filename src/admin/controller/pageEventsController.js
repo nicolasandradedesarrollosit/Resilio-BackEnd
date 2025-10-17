@@ -65,7 +65,7 @@ export async function updateEventController(req, res, next) {
 
 export async function deleteEventController(req, res, next) {
     try {
-        const eventId = parseInt(req.params.id, 10);
+        const eventId = parseInt(req.url.split('/').pop(), 10);
 
         if (isNaN(eventId)) {
             return res.status(400).json({ error: 'Invalid event ID.' });
@@ -113,7 +113,6 @@ export async function uploadEventImageController(req, res, next) {
             });
         }
 
-        // Limpiar el base64 (eliminar data:image/...;base64, si existe)
         let base64Data = req.body.image;
         if (base64Data.includes('base64,')) {
             base64Data = base64Data.split('base64,')[1];
