@@ -76,10 +76,8 @@ export async function deleteEventController(req, res, next) {
             return res.status(404).json({ error: 'Event not found.' });
         }
 
-        // Eliminar imagen de Supabase si existe
         if (deletedEvent.url_image_event) {
             try {
-                // Extraer solo el path de la URL completa
                 const imagePath = deletedEvent.url_image_event.includes('/')
                     ? deletedEvent.url_image_event.split('/').slice(-2).join('/')
                     : deletedEvent.url_image_event;
@@ -89,7 +87,6 @@ export async function deleteEventController(req, res, next) {
                 console.log('✅ Imagen eliminada de Supabase');
             } catch (imgError) {
                 console.error('⚠️ Error al eliminar imagen de Supabase:', imgError.message);
-                // No fallar la eliminación del evento si hay error al eliminar la imagen
             }
         }
 
