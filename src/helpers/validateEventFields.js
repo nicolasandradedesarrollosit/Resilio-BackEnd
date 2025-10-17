@@ -28,7 +28,7 @@ export function validateEventReq(eventData) {
 }
 
 export function validatePartialEventReq(eventData) {
-    const { name, description, location, date, url_passline, url_image } = eventData;
+    const { name, description, location, date, url_passline, url_image_event } = eventData;
     const errors = [];
 
     if (name !== undefined && (typeof name !== 'string' || name.trim() === '')) {
@@ -43,10 +43,10 @@ export function validatePartialEventReq(eventData) {
     if (date !== undefined && isNaN(Date.parse(date))) {
         errors.push('Date must be a valid date string if provided.');
     }
-    if (url_passline !== undefined && (typeof url_passline !== 'string' || !/^https?:\/\/.+/.test(url_passline))) {
+    if (url_passline !== undefined && url_passline !== null && url_passline !== '' && (typeof url_passline !== 'string' || !/^https?:\/\/.+/.test(url_passline))) {
         errors.push('URL Passline must be a valid URL if provided.');
     }
-    if (url_image !== undefined && (typeof url_image !== 'string' || !/^https?:\/\/.+/.test(url_image))) {
+    if (url_image_event !== undefined && url_image_event !== null && url_image_event !== '' && (typeof url_image_event !== 'string' || !/^https?:\/\/.+/.test(url_image_event))) {
         errors.push('URL Image must be a valid URL if provided.');
     }
 

@@ -5,7 +5,7 @@ import {
     createEventModel
 } from "../model/pageEventsModel.js";
 import { validateUserReq } from "../../helpers/validateLimitOffset.js";
-import { validateEventReq, validatePartialEventReq } from "../../helpers/validateEventReq.js";
+import { validateEventReq, validatePartialEventReq } from "../../helpers/validateEventFields.js";
 import { uploadToSupabase, deleteFromSupabase } from "../../services/supabaseStorage.js";
 
 export async function getEventsController(req, res, next) {
@@ -84,7 +84,6 @@ export async function deleteEventController(req, res, next) {
                 
                 await deleteFromSupabase(imagePath);
             } catch (imgError) {
-                // Silenciar error de eliminación de imagen
             }
         }
 
