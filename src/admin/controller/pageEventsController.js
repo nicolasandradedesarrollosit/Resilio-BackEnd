@@ -65,7 +65,7 @@ export async function updateEventController(req, res, next) {
 
 export async function deleteEventController(req, res, next) {
     try {
-        const eventId = parseInt(req.url.split('/').pop(), 10);
+        const eventId = parseInt(req.params.id, 10);
 
         if (isNaN(eventId)) {
             return res.status(400).json({ error: 'Invalid event ID.' });
@@ -76,8 +76,21 @@ export async function deleteEventController(req, res, next) {
             return res.status(404).json({ error: 'Event not found.' });
         }
 
-        if (deletedEvent.image) {
-            await deleteFromSupabase(deletedEvent.image);
+        // Eliminar imagen de Supabase si existe
+        if (deletedEvent.url_image_event) {
+            try {
+                // Extraer solo el path de la URL completa
+                const imagePath = deletedEvent.url_image_event.includes('/')
+                    ? deletedEvent.url_image_event.split('/').slice(-2).join('/')
+                    : deletedEvent.url_image_event;
+                
+                console.log('🗑️ Eliminando imagen de Supabase:', imagePath);
+                await deleteFromSupabase(imagePath);
+                console.log('✅ Imagen eliminada de Supabase');
+            } catch (imgError) {
+                console.error('⚠️ Error al eliminar imagen de Supabase:', imgError.message);
+                // No fallar la eliminación del evento si hay error al eliminar la imagen
+            }
         }
 
         res.status(200).json({ message: 'Event deleted successfully.', event: deletedEvent });

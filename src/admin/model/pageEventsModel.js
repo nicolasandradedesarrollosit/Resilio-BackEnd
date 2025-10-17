@@ -38,8 +38,7 @@ export async function updateEventModel(userId, fieldsToUpdate) {
     }
 
     const query = `UPDATE events
-        SET ${fields.join(',\n        ')},
-            updated_at = NOW()
+        SET ${fields.join(',\n        ')}
         WHERE id = $${paramIndex}
         RETURNING name, description, location, date, url_passline, url_image_event`;
 
@@ -52,7 +51,8 @@ export async function updateEventModel(userId, fieldsToUpdate) {
 export async function deleteEventModel (id) {
     const { rows } = await pool.query(`
         DELETE FROM events
-        WHERE id = $1`, 
+        WHERE id = $1
+        RETURNING *`, 
         [id]);
     return rows[0];
 }
