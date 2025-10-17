@@ -12,6 +12,8 @@ import eventsRoute from './client/route/eventsRoutes.js';
 import partnersRoute from './client/route/partnersRoute.js';
 import pageUserAdminRoute from './admin/route/pageUserRoute.js';
 import pageEventsRoute from './admin/route/pageEventsRoute.js';
+import pageBenefitRoute from './admin/route/pageBenefitRoute.js';
+import pageBusinessRoute from './admin/route/pageBusinessRoute.js';
 import 'dotenv/config';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -20,8 +22,6 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:3000', 
     'https://nicolasandradedesarrollosit.github.io',
     process.env.URL_FRONT 
 ].filter(Boolean);
@@ -33,7 +33,6 @@ app.use(cors({
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
-            console.warn('Origen bloqueado por CORS:', origin);
             callback(new Error('No permitido por CORS'));
         }
     },
@@ -45,10 +44,9 @@ app.use(cors({
 }));
 
 app.use(cookieParser()); 
-app.use(express.json({ limit: '10mb' })); // Aumentar límite para imágenes en base64
+app.use(express.json({ limit: '10mb' })); 
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Servir archivos estáticos (imágenes subidas)
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use((req, res, next) => {
@@ -69,8 +67,9 @@ app.use('/api', eventsRoute);
 app.use('/api', partnersRoute);
 app.use('/api', pageUserAdminRoute);
 app.use('/api', pageEventsRoute);
+app.use('/api', pageBenefitRoute);
+app.use('/api', pageBusinessRoute);
 
-// Middleware para manejar errores personalizados
 app.use((err, req, res, next) => {
   if (err && err.message && err.message.includes('Tipo de archivo no permitido')) {
     return res.status(400).json({ 
@@ -81,15 +80,6 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error('Error en request:', {
-    path: req.path,
-    method: req.method,
-    origin: req.headers.origin,
-    body: req.body,
-    error: err.message,
-    stack: err.stack
-  });
-  
   const origin = req.headers.origin;
   if (origin && allowedOrigins.indexOf(origin) !== -1) {
     res.header('Access-Control-Allow-Origin', origin);

@@ -15,7 +15,6 @@ export async function fetchAllPartners(req, res, next) {
         });
     }
     catch(error){
-        console.error("Error enviando partners:", error);
         next(error);
     }
 }

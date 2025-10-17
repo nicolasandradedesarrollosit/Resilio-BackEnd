@@ -1,4 +1,4 @@
-import { pool } from '../../others/config/db.js';
+import { pool } from '../../config/db.js';
 
 export async function sendDataBanner() {
     try {
@@ -9,7 +9,6 @@ export async function sendDataBanner() {
             );
         return rows[0] || null;
     } catch (error) {
-        console.error("Database error in sendDataBanner:", error);
         throw error;
     }
 }

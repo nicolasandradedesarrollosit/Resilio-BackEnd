@@ -9,25 +9,25 @@ import {
 import { 
     hashPassword,
     comparePasswords
- } from '../util/hashing.js';
+ } from '../../helpers/hashing.js';
 import {
     generateRandomToken,
     hashToken,
     signJWT,
     signRefresh
-} from '../util/tokens.js';
+} from '../../helpers/tokens.js';
 import {
     consumeTokenVerification,
     createTokenVerification
 } from '../model/verifyEmailModel.js';
-import { sendMail } from '../util/mailer.js';
+import { sendMail } from '../../helpers/mailer.js';
 import { 
     validateFieldsRegister,
     validateFieldsLogIn,
     validateFieldsUpdate
- } from '../util/validateUserFields.js';
+ } from '../../helpers/validateUserFields.js';
 
-const URL_FRONT = process.env.URL_FRONT || 'http:/localhost:5173';
+const URL_FRONT = process.env.URL_FRONT;
 
 export async function register(req, res, next){
     try{
@@ -94,7 +94,7 @@ export async function logIn(req, res, next){
         const expiresAccess = 1000 * 60 * 15;
         const expiresRefresh = 1000 * 60 * 60 * 24 * 7;
 
-        const isProduction = false;
+        const isProduction = process.env.NODE_ENV === 'production';
 
         if (isProduction) {
             const accessCookie = `access_token=${accessToken}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${Math.floor(expiresAccess / 1000)}; Partitioned`;

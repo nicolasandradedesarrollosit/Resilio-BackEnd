@@ -6,7 +6,6 @@ export async function getBannerData(req, res, next) {
         if(!bannerData) return res.status(404).json({ error: "No banner data found" });
         res.json(bannerData);
     } catch (error) {
-        console.error("Error fetching banner data:", error);
         next(error);
     }
 }

@@ -16,13 +16,10 @@ if (isMock) {
 }
 
 export async function sendMail({ forWho, subject, html }) {
-  const info = await transporter.sendMail({
+  await transporter.sendMail({
     from: process.env.MAIL_FROM || '"Soporte" <no-reply@tuapp.com>',
     to: forWho,
     subject: subject,
     html
   });
-  if (isMock) {
-    console.log('Correo simulado:', JSON.stringify(info.message, null, 2));
-  }
 }

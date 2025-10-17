@@ -6,7 +6,7 @@ import {
     uploadEventImageController
  } from "../controller/pageEventsController.js";
 import Router from "express";
-import { requireAdmin } from "../../client/middleware/authJWT.js";
+import { requireAdmin } from "../../middlewares/authJWT.js";
 
 const r = Router();
 

@@ -3,7 +3,7 @@ import { getUserControllerLimit,
     updateUser, 
     banUser
  } from '../controller/pageUserController.js';
-import { requireAdmin } from '../../client/middleware/authJWT.js';
+import { requireAdmin } from '../../middlewares/authJWT.js';
 
 const r = Router();
 

@@ -7,7 +7,7 @@ import {
     returnUserData,
     updateUser
 } from "../controller/userController.js";
-import { requireAuth } from "../middleware/authJWT.js";
+import { requireAuth } from "../../middlewares/authJWT.js";
 
 const r = Router();
 

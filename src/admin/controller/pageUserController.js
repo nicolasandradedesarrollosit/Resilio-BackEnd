@@ -4,20 +4,20 @@ import {
     banUnbanUserModel
 } from '../model/pageUserModel.js';
 import { 
-    validateUserReq
-} from '../util/validateUserReq.js';
+    validateLimitOffset
+} from '../../helpers/validateLimitOffset.js';
 import {
     findOneById
 } from '../../client/model/userModel.js';
 import {
     validateFieldsUpdate
-} from '../../client/util/validateUserFields.js';
+} from '../../helpers/validateUserFields.js';
 
 export async function getUserControllerLimit(req, res, next) {
     const limit = parseInt(req.query.limit) || 10;
     const offset = parseInt(req.query.offset) || 0;
     try {
-        const validation = validateUserReq(req);
+        const validation = validateLimitOffset(req);
         if (!validation.valid) return res.status(400).json({ ok: false, message: validation.message });
         const users = await getUserModelLimit(limit, offset);
         res.json({ ok: true, data: users });

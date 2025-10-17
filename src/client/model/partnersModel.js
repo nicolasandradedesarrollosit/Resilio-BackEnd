@@ -1,4 +1,4 @@
-import { pool } from '../../others/config/db.js';
+import { pool } from '../../config/db.js';
 
 export async function getAllPartners() {
     try{
@@ -9,7 +9,6 @@ export async function getAllPartners() {
     return rows;
     }
     catch (error) {
-        console.error('Error fetching partners:', error);
         throw error;
     }
 }

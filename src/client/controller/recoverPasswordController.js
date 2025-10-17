@@ -1,12 +1,12 @@
 import { findOneByEmail, updatePassword } from "../model/userModel.js";
-import { generateRandomToken, hashToken } from "../util/tokens.js";
-import { hashPassword } from "../util/hashing.js";
+import { generateRandomToken, hashToken } from "../../helpers/tokens.js";
+import { hashPassword } from "../../helpers/hashing.js";
 import { consumeTokenReset, createTokenReset } from "../model/passwordResetModel.js";
-import { sendMail } from "../util/mailer.js";
+import { sendMail } from "../../helpers/mailer.js";
 
 export async function mailRecoverPassword(req, res, next){
     try{
-        const URL_FRONT = process.env.URL_FRONT || 'http:/localhost:5173';
+        const URL_FRONT = process.env.URL_FRONT;
         const { email } = req.body;
         const user = await findOneByEmail(email);
         if(!user) return res.json({ ok: true, message: 'Si el email existe, se enviará un enlace'});

@@ -1,4 +1,4 @@
-import { pool } from '../../others/config/db.js';
+import { pool } from '../../config/db.js';
 
 
 export async function createUser({ name, province, city, phone_number, email, hash }){

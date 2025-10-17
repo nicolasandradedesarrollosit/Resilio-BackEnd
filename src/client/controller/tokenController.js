@@ -2,7 +2,7 @@ import {
     verifyRefresh,
     signJWT
 
-} from "../util/tokens.js";
+} from "../../helpers/tokens.js";
 import { findOneById } from "../model/userModel.js";
 
 export async function refreshToken(req, res){
@@ -20,7 +20,7 @@ export async function refreshToken(req, res){
         const newAccess = signJWT(user);
         const expiresAccess = 1000 * 60 * 15;
 
-        const isProduction = false;
+        const isProduction = process.env.NODE_ENV === 'production';
 
         if (isProduction) {
             const accessCookie = `access_token=${newAccess}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${Math.floor(expiresAccess / 1000)}; Partitioned`;

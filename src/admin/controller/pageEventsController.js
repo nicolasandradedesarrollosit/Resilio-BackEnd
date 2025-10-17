@@ -1,12 +1,12 @@
 import { 
-    getEventsModelimit,
+    getEventsModelLimit,
     deleteEventModel,
     updateEventModel,   
     createEventModel
 } from "../model/pageEventsModel.js";
-import { validateUserReq } from "../util/validateUserReq.js";
-import { validateEventReq, validatePartialEventReq } from "../util/validateEventReq.js";
-import { uploadToSupabase, deleteFromSupabase } from "../util/supabaseStorage.js";
+import { validateUserReq } from "../../helpers/validateLimitOffset.js";
+import { validateEventReq, validatePartialEventReq } from "../../helpers/validateEventReq.js";
+import { uploadToSupabase, deleteFromSupabase } from "../../services/supabaseStorage.js";
 
 export async function getEventsController(req, res, next) {
     try {
@@ -17,7 +17,7 @@ export async function getEventsController(req, res, next) {
             return res.status(400).json({ error: validation.message });
         }
 
-        const events = await getEventsModelimit( limit, offset );
+        const events = await getEventsModelLimit( limit, offset );
         res.status(200).json(events);
     } catch (err) {
         next(err);
@@ -82,11 +82,9 @@ export async function deleteEventController(req, res, next) {
                     ? deletedEvent.url_image_event.split('/').slice(-2).join('/')
                     : deletedEvent.url_image_event;
                 
-                console.log('🗑️ Eliminando imagen de Supabase:', imagePath);
                 await deleteFromSupabase(imagePath);
-                console.log('✅ Imagen eliminada de Supabase');
             } catch (imgError) {
-                console.error('⚠️ Error al eliminar imagen de Supabase:', imgError.message);
+                // Silenciar error de eliminación de imagen
             }
         }
 
@@ -98,22 +96,12 @@ export async function deleteEventController(req, res, next) {
 
 export async function uploadEventImageController(req, res, next) {
     try {
-        console.log('📝 Datos recibidos:', {
-            hasBody: !!req.body,
-            bodyKeys: req.body ? Object.keys(req.body) : [],
-            hasImage: !!req.body?.image,
-            hasFileName: !!req.body?.fileName,
-            hasMimeType: !!req.body?.mimeType,
-            imageLength: req.body?.image?.length
-        });
-
         const allowedMimes = ['image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml', 'image/png', 'image/gif'];
         const maxSize = 5 * 1024 * 1024;
 
         if (!req.body || !req.body.image || !req.body.fileName || !req.body.mimeType) {
             return res.status(400).json({ 
-                error: 'Faltan datos requeridos. Se necesita: image (base64), fileName y mimeType.',
-                received: req.body ? Object.keys(req.body) : []
+                error: 'Faltan datos requeridos. Se necesita: image (base64), fileName y mimeType.'
             });
         }
 
@@ -136,12 +124,6 @@ export async function uploadEventImageController(req, res, next) {
             });
         }
 
-        console.log('📤 Subiendo a Supabase...', {
-            fileName: req.body.fileName,
-            mimeType: req.body.mimeType,
-            bufferSize: fileBuffer.length
-        });
-
         const result = await uploadToSupabase(
             fileBuffer, 
             req.body.fileName, 
@@ -149,22 +131,14 @@ export async function uploadEventImageController(req, res, next) {
             'events'
         );
 
-        console.log('✅ Imagen subida exitosamente:', result);
-
         res.status(200).json({
             message: 'Imagen subida exitosamente',
             filename: result.path,
             url: result.url
         });
     } catch (err) {
-        console.error('❌ Error al subir imagen:', {
-            message: err.message,
-            stack: err.stack,
-            body: req.body ? Object.keys(req.body) : 'no body'
-        });
         res.status(500).json({ 
-            error: 'Error al subir la imagen',
-            details: err.message 
+            error: 'Error al subir la imagen'
         });
     }
 }

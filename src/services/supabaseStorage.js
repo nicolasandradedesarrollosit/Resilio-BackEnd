@@ -39,7 +39,6 @@ export async function uploadToSupabase(fileBuffer, originalName, mimeType, folde
             path: data.path
         };
     } catch (error) {
-        console.error('Error subiendo a Supabase:', error);
         throw error;
     }
 }
@@ -59,7 +58,6 @@ export async function deleteFromSupabase(filePath) {
 
         return true;
     } catch (error) {
-        console.error('Error eliminando de Supabase:', error);
         throw error;
     }
 }

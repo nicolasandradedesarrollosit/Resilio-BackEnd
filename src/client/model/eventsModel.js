@@ -1,4 +1,4 @@
-import { pool } from '../../others/config/db.js';
+import { pool } from '../../config/db.js';
 
 export async function getAllEvents() {
     try{
@@ -9,7 +9,6 @@ export async function getAllEvents() {
     return rows;
     }
     catch (error) {
-        console.error('Error fetching events:', error);
         throw error;
     }
 }

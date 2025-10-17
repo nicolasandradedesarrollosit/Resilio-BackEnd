@@ -16,7 +16,6 @@ export async function fetchAllEvents(req, res, next) {
             data: events
         });
     } catch (error) {
-        console.error('Error enviando eventos:', err);
         next(error);
     }
 }

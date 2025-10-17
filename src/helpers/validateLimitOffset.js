@@ -1,4 +1,4 @@
-export function validateUserReq(req) {
+export function validateLimitOffset(req) {
     const limit = parseInt(req.query.limit);
     const offset = parseInt(req.query.offset);
     
@@ -10,3 +10,5 @@ export function validateUserReq(req) {
     }
     return { valid: true };
 }
+
+export const validateUserReq = validateLimitOffset;

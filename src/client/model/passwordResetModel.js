@@ -1,4 +1,4 @@
-import { pool } from '../../others/config/db.js';
+import { pool } from '../../config/db.js';
 
 export async function createTokenReset(user_id, token_hash, expires_minutes = 60){
     const { rows } = await pool.query(
