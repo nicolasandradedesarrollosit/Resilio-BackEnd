@@ -52,13 +52,14 @@ export async function updateBusiness (businessId, fieldsToUpdate) {
     }
 
     if (fields.length === 0) {
-        return await findOneById(businessId);
+        const { rows } = await pool.query(`SELECT * FROM business WHERE id = $1`, [businessId]);
+        return rows[0] || null;
     }
 
     const query = `UPDATE business
         SET ${fields.join(',\n        ')}
         WHERE id = $${paramIndex}
-        RETURNING name, location, url_image_business`;
+        RETURNING *`;
 
     values.push(businessId);
 

@@ -2,37 +2,32 @@ import { pool } from '../../config/db.js';
 
 export async function getBenefitModel(limit, offset) {
     const { rows } = await pool.query(`
-        SELECT * FROM events
-        ORDER BY date DESC
+        SELECT * FROM benefits
+        ORDER BY id DESC
         LIMIT $1 OFFSET $2
     `, [limit, offset]);
     return rows;
 }
 
-export async function createBenefitModel(eventData) {
-    const { name, description, location, date, url_passline, url_image } = eventData;
+export async function createBenefitModel(benefitData) {
+    const { name, q_of_codes, discount, id_business_discount } = benefitData;
     const { rows } = await pool.query(
         `
-        INSERT INTO events (name, q_of_codes, location, discount, url_image_benefit, id_business_discount, created_at)
-        VALUES ($1, $2, $3, $4, $5, $6, NOW())
+        INSERT INTO benefits (name, q_of_codes, discount, id_business_discount, created_at)
+        VALUES ($1, $2, $3, $4, NOW())
         RETURNING *
         `,
-        [name, description, location, date, url_passline, url_image]
+        [name, q_of_codes, discount, id_business_discount]
     );
 
     return rows[0];
 }
 
 export async function updateBenefitModel(benefitId, fieldsToUpdate) {
-    const allowedFields = ['name', 'description', 'location', 'date', 'url_passline', 'url_image_event', 'q_of_codes', 'discount', 'id_business_discount'];
+    const allowedFields = ['name', 'q_of_codes', 'discount', 'id_business_discount'];
     const fields = [];
     const values = [];
     let paramIndex = 1;
-
-    if (fieldsToUpdate.url_image !== undefined) {
-        fieldsToUpdate.url_image_event = fieldsToUpdate.url_image;
-        delete fieldsToUpdate.url_image;
-    }
 
     for (const [key, value] of Object.entries(fieldsToUpdate)) {
         if (allowedFields.includes(key)) {
@@ -43,13 +38,14 @@ export async function updateBenefitModel(benefitId, fieldsToUpdate) {
     }
 
     if (fields.length === 0) {
-        return await getBenefitModel(benefitId);
+        const { rows } = await pool.query(`SELECT * FROM benefits WHERE id = $1`, [benefitId]);
+        return rows[0] || null;
     }
 
-    const query = `UPDATE events
+    const query = `UPDATE benefits
         SET ${fields.join(',\n        ')}
         WHERE id = $${paramIndex}
-        RETURNING name, description, location, date, url_passline, url_image_event`;
+        RETURNING *`;
 
     values.push(benefitId);
 
@@ -59,7 +55,7 @@ export async function updateBenefitModel(benefitId, fieldsToUpdate) {
 
 export async function deleteBenefitModel (id) {
     const { rows } = await pool.query(`
-        DELETE FROM events
+        DELETE FROM benefits
         WHERE id = $1
         RETURNING *`, 
         [id]);

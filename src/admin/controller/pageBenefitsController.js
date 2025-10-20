@@ -36,14 +36,14 @@ export async function createBenefitController(req, res, next) {
     try {
         const benefitData = req.body;
 
-        const businessExists = await findOneById(benefitData.id_business);
-        if (!businessExists) {
-            return res.status(404).json({ error: 'Negocio no encontrado' });
-        }
-
         const validation = validateBenefitFields(benefitData);
         if (!validation.valid) {
             return res.status(400).json({ error: validation.message });
+        }
+
+        const businessExists = await findOneById(benefitData.id_business_discount);
+        if (!businessExists) {
+            return res.status(404).json({ error: 'Negocio no encontrado' });
         }
 
         const newBenefit = await createBenefitModel(benefitData);
@@ -56,17 +56,23 @@ export async function createBenefitController(req, res, next) {
 
 export async function updateBenefitController(req, res, next) {
     try {
-        const benefitId = parseInt(req.url.params.id, 10);
+        const benefitId = parseInt(req.params.id, 10);
         const fieldsToUpdate = req.body;
+
+        if (isNaN(benefitId)) {
+            return res.status(400).json({ error: 'ID de beneficio inválido' });
+        }
 
         const validation = validatePartialBenefitFields(fieldsToUpdate);
         if (!validation.valid) {
             return res.status(400).json({ error: validation.message });
         }
 
-        const businessExists = await findOneById(fieldsToUpdate.id_business);
-        if (fieldsToUpdate.id_business && !businessExists) {
-            return res.status(404).json({ error: 'Negocio no encontrado' });
+        if (fieldsToUpdate.id_business_discount) {
+            const businessExists = await findOneById(fieldsToUpdate.id_business_discount);
+            if (!businessExists) {
+                return res.status(404).json({ error: 'Negocio no encontrado' });
+            }
         }
 
         const updatedBenefit = await updateBenefitModel(benefitId, fieldsToUpdate);
@@ -83,7 +89,12 @@ export async function updateBenefitController(req, res, next) {
 
 export async function deleteBenefitController(req, res, next) {
     try {
-        const benefitId = parseInt(req.url.params.id, 10);
+        const benefitId = parseInt(req.params.id, 10);
+        
+        if (isNaN(benefitId)) {
+            return res.status(400).json({ error: 'ID de beneficio inválido' });
+        }
+
         const deleted = await deleteBenefitModel(benefitId);
         if (!deleted) {
             return res.status(404).json({ error: 'Beneficio no encontrado' });
