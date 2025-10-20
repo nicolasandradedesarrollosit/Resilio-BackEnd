@@ -17,7 +17,6 @@ export async function getBusinessController(req, res, next) {
     try {
         let { limit, offset } = req.query;
 
-        // Convertir a números enteros con valores por defecto
         limit = limit ? parseInt(limit, 10) : 10;
         offset = offset ? parseInt(offset, 10) : 0;
 
@@ -30,6 +29,8 @@ export async function getBusinessController(req, res, next) {
         res.status(200).json(business);
     }
     catch (err) {
+        console.error('Error en getBusinessController:', err.message);
+        console.error('Stack:', err.stack);
         next(err);
     }
 }

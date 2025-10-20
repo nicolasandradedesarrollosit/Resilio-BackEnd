@@ -12,15 +12,22 @@ export async function findOneById (businessId) {
 }
 
 export async function getBusiness (limit, offset) {
-    const { rows } = await pool.query(
-        `
-        SELECT * FROM business
-        ORDER BY id DESC
-        LIMIT $1 OFFSET $2
-        `,
-        [limit, offset]
-    );
-    return rows;
+    try {
+        console.log('getBusiness: limit=', limit, 'offset=', offset);
+        const { rows } = await pool.query(
+            `
+            SELECT * FROM business
+            ORDER BY id DESC
+            LIMIT $1 OFFSET $2
+            `,
+            [limit, offset]
+        );
+        console.log('getBusiness: rows.length=', rows.length);
+        return rows;
+    } catch (err) {
+        console.error('Error en getBusiness:', err.message);
+        throw err;
+    }
 }
 
 export async function createBusiness (businessData) {
