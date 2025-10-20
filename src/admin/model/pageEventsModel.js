@@ -14,7 +14,7 @@ export async function createEventModel(eventData) {
     const { rows } = await pool.query(`
         INSERT INTO events (name, description, location, date, url_passline, url_image_event)
         VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING id`, 
+        RETURNING *`, 
         [name, description, location, date, url_passline, url_image]);
     return rows[0];
 }
@@ -46,7 +46,7 @@ export async function updateEventModel(userId, fieldsToUpdate) {
     const query = `UPDATE events
         SET ${fields.join(',\n        ')}
         WHERE id = $${paramIndex}
-        RETURNING name, description, location, date, url_passline, url_image_event`;
+        RETURNING *`;
 
     values.push(userId);
 

@@ -1,14 +1,18 @@
-export function validateLimitOffset(req) {
-    const limit = parseInt(req.query.limit);
-    const offset = parseInt(req.query.offset);
+export function validateLimitOffset(limit, offset) {
+    const parsedLimit = parseInt(limit, 10);
+    const parsedOffset = parseInt(offset, 10);
     
-    if (req.query.limit !== undefined && (isNaN(limit) || limit <= 0)) {
+    if (limit !== undefined && (isNaN(parsedLimit) || parsedLimit <= 0)) {
         return { valid: false, message: 'Limite tiene que ser un número positivo' };
     }
-    if (req.query.offset !== undefined && (isNaN(offset) || offset < 0)) {
+    if (offset !== undefined && (isNaN(parsedOffset) || parsedOffset < 0)) {
         return { valid: false, message: 'Offset tiene que ser un número no negativo' };
     }
     return { valid: true };
 }
 
-export const validateUserReq = validateLimitOffset;
+export const validateUserReq = (req) => {
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 10;
+    const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
+    return validateLimitOffset(limit, offset);
+};

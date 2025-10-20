@@ -15,7 +15,11 @@ import { uploadToSupabaseBusiness, deleteFromSupabaseBusiness } from "../../serv
 
 export async function getBusinessController(req, res, next) {
     try {
-        const { limit, offset } = req.query;
+        let { limit, offset } = req.query;
+
+        // Convertir a números enteros con valores por defecto
+        limit = limit ? parseInt(limit, 10) : 10;
+        offset = offset ? parseInt(offset, 10) : 0;
 
         const isValid = validateLimitOffset(limit, offset);
         if (!isValid.valid) {
