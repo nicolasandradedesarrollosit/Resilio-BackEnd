@@ -3,7 +3,8 @@ import {
     getBusinessController,
     createBusinessController,
     updateBusinessController,
-    deleteBusinessController
+    deleteBusinessController,
+    uploadBusinessImageController
     } from '../controller/pageBusinessController.js';
 import { requireAdmin } from '../../middlewares/authJWT.js';
 
@@ -13,5 +14,6 @@ r.get('/admin/business', requireAdmin, getBusinessController);
 r.post('/admin/business', requireAdmin, createBusinessController);
 r.patch('/admin/business/:id', requireAdmin, updateBusinessController);
 r.delete('/admin/business/:id', requireAdmin, deleteBusinessController);
+r.post('/admin/business/upload-image', requireAdmin, uploadBusinessImageController);
 
 export default r;

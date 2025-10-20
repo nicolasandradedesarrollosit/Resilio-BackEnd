@@ -136,8 +136,6 @@ export async function uploadEventImageController(req, res, next) {
             url: result.url
         });
     } catch (err) {
-        res.status(500).json({ 
-            error: 'Error al subir la imagen'
-        });
+        next(err);
     }
 }
