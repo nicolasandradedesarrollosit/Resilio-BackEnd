@@ -6,13 +6,7 @@ const supabase = createClient(
     process.env.SUPABASE_SERVICE_KEY 
 );
 
-/**
- * @param {Buffer} fileBuffer
- * @param {string} originalName
- * @param {string} mimeType
- * @param {string} folder 
- * @returns {Promise<{url: string, path: string}>}
- */
+
 export async function uploadToSupabase(fileBuffer, originalName, mimeType, folder = 'events') {
     try {
         const fileName = `${Date.now()}-${originalName}`;
@@ -43,9 +37,7 @@ export async function uploadToSupabase(fileBuffer, originalName, mimeType, folde
     }
 }
 
-/**
- * @param {string} filePath
- */
+
 export async function deleteFromSupabase(filePath) {
     try {
         const { error } = await supabase.storage
@@ -92,9 +84,7 @@ export async function uploadToSupabaseBusiness(fileBuffer, originalName, mimeTyp
     }
 }
 
-/**
- * @param {string} filePath
- */
+
 export async function deleteFromSupabaseBusiness(filePath) {
     try {
         const { error } = await supabase.storage

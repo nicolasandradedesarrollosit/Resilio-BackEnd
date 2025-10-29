@@ -13,7 +13,6 @@ export async function findOneById (businessId) {
 
 export async function getBusiness (limit, offset) {
     try {
-        console.log('getBusiness: limit=', limit, 'offset=', offset);
         const { rows } = await pool.query(
             `
             SELECT * FROM business
@@ -22,10 +21,8 @@ export async function getBusiness (limit, offset) {
             `,
             [limit, offset]
         );
-        console.log('getBusiness: rows.length=', rows.length);
         return rows;
     } catch (err) {
-        console.error('Error en getBusiness:', err.message);
         throw err;
     }
 }

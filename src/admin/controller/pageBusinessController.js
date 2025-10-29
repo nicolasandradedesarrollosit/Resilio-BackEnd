@@ -29,8 +29,6 @@ export async function getBusinessController(req, res, next) {
         res.status(200).json(business);
     }
     catch (err) {
-        console.error('Error en getBusinessController:', err.message);
-        console.error('Stack:', err.stack);
         next(err);
     }
 }

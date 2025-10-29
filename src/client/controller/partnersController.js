@@ -1,6 +1,6 @@
 import { getAllPartners } from '../model/partnersModel.js';
 
-export async function fetchAllPartners(req, res, next) {
+export async function fetchAllPartners(_req, res, next) {
     try {
         const partners = await getAllPartners();
         if (!partners || partners.length === 0) {
