@@ -6,6 +6,7 @@ export async function getAllPartners() {
             `SELECT 
             benefits_business.id as id,
             business.name as name,
+            benefits_business.category_id as category,
             business.location as location,
             benefits_business.discount as discount,
             benefits_business.q_of_codes as codes,
