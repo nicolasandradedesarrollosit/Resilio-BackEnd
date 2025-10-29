@@ -85,6 +85,7 @@ app.use((err, req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');
   }
   
+  console.error('Error interno del servidor:', err);
   res.status(500).json({ 
     ok: false, 
     message: 'Error interno del servidor' 
