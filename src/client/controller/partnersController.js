@@ -9,6 +9,7 @@ export async function fetchAllPartners(_req, res, next) {
                 data: []
             });
         }
+
         res.status(200).json({
             ok: true,
             data: partners
