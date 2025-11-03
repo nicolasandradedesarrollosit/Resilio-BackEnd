@@ -10,6 +10,7 @@ import googleRoute from './client/route/googleOauthRoute.js';
 import bannerRoute from './client/route/bannerRoute.js';
 import eventsRoute from './client/route/eventsRoutes.js';
 import partnersRoute from './client/route/partnersRoute.js';
+import benefitsRoute from './client/route/myBenefitsRoute.js';
 import pageUserAdminRoute from './admin/route/pageUserRoute.js';
 import pageEventsRoute from './admin/route/pageEventsRoute.js';
 import pageBenefitRoute from './admin/route/pageBenefitRoute.js';
@@ -64,12 +65,13 @@ app.use('/api', googleRoute);
 app.use('/api', bannerRoute);
 app.use('/api', eventsRoute);
 app.use('/api', partnersRoute);
+app.use('/api' , benefitsRoute);
 app.use('/api', pageUserAdminRoute);
 app.use('/api', pageEventsRoute);
 app.use('/api', pageBenefitRoute);
 app.use('/api', pageBusinessRoute);
 
-app.use((err, req, res, next) => {
+app.use((err, _req, res, next) => {
   if (err && err.message && err.message.includes('Tipo de archivo no permitido')) {
     return res.status(400).json({ 
       error: err.message 
