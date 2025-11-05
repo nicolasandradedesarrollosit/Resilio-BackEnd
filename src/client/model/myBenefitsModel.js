@@ -1,4 +1,4 @@
-import {pool} from '../../database/db.js';
+import {pool} from '../../config/db.js';
 
 export async function getMyBenefits(idUser) {
     try {
