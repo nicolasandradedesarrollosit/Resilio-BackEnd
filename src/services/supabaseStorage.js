@@ -6,6 +6,20 @@ const supabase = createClient(
     process.env.SUPABASE_SERVICE_KEY 
 );
 
+/**
+ * IMPORTANTE: Este servicio usa el bucket 'Images-Events' de Supabase
+ * 
+ * Estructura del bucket:
+ * - Images-Events/
+ *   ├── events/        (imágenes de eventos)
+ *   └── business/      (imágenes de negocios)
+ * 
+ * Asegúrate de que:
+ * 1. El bucket 'Images-Events' existe en Supabase
+ * 2. El bucket tiene permisos públicos de lectura
+ * 3. Las carpetas 'events' y 'business' se crean automáticamente al subir archivos
+ */
+
 
 export async function uploadToSupabase(fileBuffer, originalName, mimeType, folder = 'events') {
     try {

@@ -11,13 +11,18 @@ export async function getBenefitModel(limit, offset) {
 
 export async function createBenefitModel(benefitData) {
     const { name, q_of_codes, discount, id_business_discount } = benefitData;
+    
+    // Asegurar que los valores numéricos sean válidos o 0 por defecto
+    const finalQOfCodes = q_of_codes !== undefined && q_of_codes !== null ? q_of_codes : 0;
+    const finalDiscount = discount !== undefined && discount !== null ? discount : 0;
+    
     const { rows } = await pool.query(
         `
         INSERT INTO benefits_business (name, q_of_codes, discount, id_business_discount, created_at)
         VALUES ($1, $2, $3, $4, NOW())
         RETURNING *
         `,
-        [name, q_of_codes, discount, id_business_discount]
+        [name, finalQOfCodes, finalDiscount, id_business_discount]
     );
 
     return rows[0];
