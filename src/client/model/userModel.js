@@ -89,7 +89,7 @@ export async function addGoogleToExistingUser(userId, googleId) {
 
 export async function getUserData(userId){
   const { rows } = await pool.query(
-    `SELECT name, ispremium, role, email, phone_number, city, province, email_verified, q_of_redeemed, points_user FROM users
+    `SELECT id, name, ispremium, role, email, phone_number, city, province, email_verified, q_of_redeemed, points_user FROM users
     WHERE id = $1`,
     [userId]
   )
