@@ -1,8 +1,11 @@
 import { getAllPartners } from '../model/partnersModel.js';
 
-export async function fetchAllPartners(_req, res, next) {
+export async function fetchAllPartners(req, res, next) {
     try {
-        const partners = await getAllPartners();
+        // Si el usuario está autenticado, pasar su ID para incluir info de canjeados
+        const userId = req.user?.id || null;
+        
+        const partners = await getAllPartners(userId);
         if (!partners || partners.length === 0) {
             return res.status(404).json({
                 message: 'Sin partners encontrados',

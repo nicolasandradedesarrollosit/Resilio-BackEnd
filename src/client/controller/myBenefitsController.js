@@ -1,6 +1,7 @@
 import {
     getMyBenefits,
-    postMyBenefits
+    postMyBenefits,
+    checkBenefitAlreadyRedeemed
 } from '../model/myBenefitsModel.js';
 
 import {
@@ -60,6 +61,20 @@ export async function postMyBenefitsController(req, res, next) {
             return res.status(403).json({ 
                 ok: false, 
                 message: 'No puedes canjear beneficios para otro usuario' 
+            });
+        }
+
+        // Verificar si el beneficio ya fue canjeado por este usuario
+        const alreadyRedeemed = await checkBenefitAlreadyRedeemed({ 
+            idBenefit: parsedBenefitId, 
+            idUser: parsedUserId 
+        });
+
+        if (alreadyRedeemed) {
+            return res.status(409).json({ 
+                ok: false, 
+                message: 'Ya has canjeado este beneficio anteriormente',
+                code: 'ALREADY_REDEEMED'
             });
         }
 
