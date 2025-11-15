@@ -28,3 +28,18 @@ export async function getMyBenefits(idUser) {
         throw err;
     }
 }
+
+export async function postMyBenefits (req, _res) {
+    try {
+        const {idBenefit, idUser, code} = req.body;
+        const rows = await pool.query(`
+            INSERT INTO benefits_redeemed (id_benefit, id_user, code)
+            VALUES ($1, $2, $3)
+            RETURNING *;
+        `, [idBenefit, idUser, code]);
+        return rows[0];
+    }
+    catch (err) {
+        throw err;
+    }
+}

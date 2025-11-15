@@ -61,6 +61,20 @@ export async function uploadBusinessImageController(req, res, next) {
             });
         }
 
+        // Validate fileName to prevent path traversal attacks
+        const fileName = req.body.fileName;
+        if (typeof fileName !== 'string' || fileName.includes('..') || fileName.includes('/') || fileName.includes('\\')) {
+            return res.status(400).json({ 
+                error: 'Nombre de archivo inválido.' 
+            });
+        }
+
+        if (fileName.length > 255) {
+            return res.status(400).json({ 
+                error: 'Nombre de archivo demasiado largo (máximo 255 caracteres).' 
+            });
+        }
+
         if (!allowedMimes.includes(req.body.mimeType)) {
             return res.status(400).json({ 
                 error: 'Tipo de archivo no permitido. Solo se aceptan JPG, JPEG, WEBP, SVG, PNG y GIF.' 
@@ -82,7 +96,7 @@ export async function uploadBusinessImageController(req, res, next) {
 
         const result = await uploadToSupabaseBusiness(
             fileBuffer, 
-            req.body.fileName, 
+            fileName, 
             req.body.mimeType, 
             'business'
         );
