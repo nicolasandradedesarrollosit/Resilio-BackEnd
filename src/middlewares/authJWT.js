@@ -1,5 +1,6 @@
 import {verifyAccess} from '../helpers/tokens.js';
 
+// Middleware para verificar autenticación básica
 export async function requireAuth(req, res, next){
     if (req.method === 'OPTIONS') {
         return next();
@@ -17,9 +18,28 @@ export async function requireAuth(req, res, next){
         
         const payload = verifyAccess(token);
         
+        // Verificar que el usuario no esté baneado
+        const { findOneById } = await import('../client/model/userModel.js');
+        const user = await findOneById(payload.sub);
+        
+        if (!user) {
+            return res.status(401).json({ 
+                ok: false, 
+                message: 'Usuario no encontrado' 
+            });
+        }
+        
+        if (user.is_banned) {
+            return res.status(403).json({ 
+                ok: false, 
+                message: 'Tu cuenta ha sido suspendida. Contacta con soporte para más información.' 
+            });
+        }
+        
         req.user = {
             id: payload.sub,
-            tokenVersion: payload.version
+            tokenVersion: payload.version,
+            role: user.role
         };
         
         next();
@@ -31,6 +51,7 @@ export async function requireAuth(req, res, next){
     }
 }
 
+// Middleware para verificar que el usuario sea administrador
 export async function requireAdmin(req, res, next){
     if (req.method === 'OPTIONS') {
         return next();
@@ -48,22 +69,36 @@ export async function requireAdmin(req, res, next){
         
         const payload = verifyAccess(token);
         
-        req.user = {
-            id: payload.sub,
-            tokenVersion: payload.version
-        };
-        
         const { findOneById } = await import('../client/model/userModel.js');
         const user = await findOneById(payload.sub);
         
-        if (!user || user.role !== 'admin') {
+        if (!user) {
+            return res.status(401).json({ 
+                ok: false, 
+                message: 'Usuario no encontrado' 
+            });
+        }
+        
+        if (user.is_banned) {
+            return res.status(403).json({ 
+                ok: false, 
+                message: 'Tu cuenta ha sido suspendida. Contacta con soporte para más información.' 
+            });
+        }
+        
+        if (user.role !== 'admin') {
             return res.status(403).json({ 
                 ok: false, 
                 message: 'No autorizado - Se requiere rol de administrador' 
             });
         }
         
-        req.user.role = user.role;
+        req.user = {
+            id: payload.sub,
+            tokenVersion: payload.version,
+            role: user.role
+        };
+        
         next();
     } catch (error) {
         return res.status(401).json({ 
@@ -71,4 +106,38 @@ export async function requireAdmin(req, res, next){
             message: 'Token inválido o expirado' 
         });
     }
+}
+
+// Middleware opcional para verificar que el usuario acceda solo a sus propios recursos
+export function requireOwnership(req, res, next) {
+    if (req.method === 'OPTIONS') {
+        return next();
+    }
+    
+    // Verificar que el usuario acceda a sus propios datos
+    const requestedUserId = parseInt(req.params.userId || req.params.idUser || req.body.userId || req.body.idUser);
+    const authenticatedUserId = req.user?.id;
+    
+    // Si no hay usuario autenticado, rechazar
+    if (!authenticatedUserId) {
+        return res.status(401).json({ 
+            ok: false, 
+            message: 'No autenticado' 
+        });
+    }
+    
+    // Si es admin, permitir acceso a cualquier recurso
+    if (req.user?.role === 'admin') {
+        return next();
+    }
+    
+    // Verificar que el usuario solo acceda a sus propios recursos
+    if (requestedUserId && requestedUserId !== authenticatedUserId) {
+        return res.status(403).json({ 
+            ok: false, 
+            message: 'No tienes permiso para acceder a este recurso' 
+        });
+    }
+    
+    next();
 }

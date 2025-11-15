@@ -2,7 +2,7 @@ import {pool} from '../../config/db.js';
 
 export async function getMyBenefits(idUser) {
     try {
-        const rows = await pool.query(`
+        const { rows } = await pool.query(`
             SELECT 
                 users.id AS user_id,
                 benefits_business.id AS id,
@@ -29,10 +29,9 @@ export async function getMyBenefits(idUser) {
     }
 }
 
-export async function postMyBenefits (req, _res) {
+export async function postMyBenefits ({ idBenefit, idUser, code }) {
     try {
-        const {idBenefit, idUser, code} = req.body;
-        const rows = await pool.query(`
+        const { rows } = await pool.query(`
             INSERT INTO benefits_redeemed (id_benefit, id_user, code)
             VALUES ($1, $2, $3)
             RETURNING *;

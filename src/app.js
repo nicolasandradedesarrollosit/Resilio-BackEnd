@@ -143,10 +143,16 @@ app.use('/api/', generalLimiter);
 // Aplicar rate limiters específicos
 app.use('/api/log-in', authLimiter);
 app.use('/api/register', authLimiter);
+app.use('/api/auth/google', authLimiter); // Google OAuth también necesita límite
+app.use('/api/verify-email', authLimiter); // Verificación de email
+app.use('/api/refresh', authLimiter); // Refresh token
 app.use('/api/reset-password', passwordResetLimiter);
 app.use('/api/recover-password', passwordResetLimiter);
+app.use('/api/forgot-password', passwordResetLimiter);
 app.use('/api/admin/events/upload-image', uploadLimiter);
 app.use('/api/admin/business/upload-image', uploadLimiter);
+app.use('/api/admin/benefits', uploadLimiter); // Beneficios admin pueden tener imágenes
+app.use('/api/admin/business', uploadLimiter); // Negocios admin pueden tener imágenes
 
 // ============================================
 // FIN RATE LIMITING

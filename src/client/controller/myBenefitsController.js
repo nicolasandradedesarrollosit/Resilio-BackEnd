@@ -31,17 +31,35 @@ export async function handleGetMyBenefits(req, res, next) {
 
 export async function postMyBenefitsController(req, res, next) {
     try {
-        const { idBenefit, idUser } = req.body;
+        // Aceptar tanto benefitId/userId (frontend) como idBenefit/idUser (legacy)
+        const { 
+            idBenefit, 
+            idUser, 
+            benefitId, 
+            userId 
+        } = req.body;
+
+        const benefitIdValue = benefitId || idBenefit;
+        const userIdValue = userId || idUser;
 
         // Parse and validate both IDs
-        const parsedBenefitId = parseInt(idBenefit, 10);
-        const parsedUserId = parseInt(idUser, 10);
+        const parsedBenefitId = parseInt(benefitIdValue, 10);
+        const parsedUserId = parseInt(userIdValue, 10);
 
         if (isNaN(parsedBenefitId) || parsedBenefitId <= 0 || 
             isNaN(parsedUserId) || parsedUserId <= 0) {
             return res.status(400).json({ 
                 ok: false, 
-                message: 'idBenefit and idUser are required and must be positive integers' 
+                message: 'Benefit ID and User ID are required and must be positive integers' 
+            });
+        }
+
+        // Verificar que el usuario solo pueda canjear beneficios para sí mismo
+        // (a menos que sea admin)
+        if (req.user.role !== 'admin' && req.user.id !== parsedUserId) {
+            return res.status(403).json({ 
+                ok: false, 
+                message: 'No puedes canjear beneficios para otro usuario' 
             });
         }
 
@@ -53,7 +71,11 @@ export async function postMyBenefitsController(req, res, next) {
             code 
         });
 
-        res.status(201).json(newRedemption);
+        res.status(201).json({ 
+            ok: true, 
+            data: newRedemption,
+            message: 'Benefit redeemed successfully'
+        });
     }
     catch (err) {
         next(err);
