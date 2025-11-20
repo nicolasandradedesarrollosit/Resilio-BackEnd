@@ -37,7 +37,7 @@ export async function requireAuth(req, res, next){
         }
         
         req.user = {
-            id: payload.sub,
+            id: parseInt(payload.sub, 10), // Asegurar que sea número
             tokenVersion: payload.version,
             role: user.role
         };
@@ -94,7 +94,7 @@ export async function requireAdmin(req, res, next){
         }
         
         req.user = {
-            id: payload.sub,
+            id: parseInt(payload.sub, 10), // Asegurar que sea número
             tokenVersion: payload.version,
             role: user.role
         };

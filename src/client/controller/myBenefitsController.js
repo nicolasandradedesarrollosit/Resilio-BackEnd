@@ -54,7 +54,15 @@ export async function postMyBenefitsController(req, res, next) {
         }
 
         // Verificar que el usuario solo pueda canjear beneficios para sí mismo
-        if (req.user.id !== parsedUserId) {
+        // Comparar como números para evitar problemas de tipo
+        const authenticatedUserId = parseInt(req.user.id, 10);
+        
+        if (authenticatedUserId !== parsedUserId) {
+            console.log('[myBenefits] Intento de canje no autorizado:', {
+                authenticatedUserId,
+                parsedUserId,
+                match: authenticatedUserId === parsedUserId
+            });
             return res.status(403).json({ 
                 ok: false, 
                 message: 'No puedes canjear beneficios para otro usuario' 

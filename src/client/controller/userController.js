@@ -206,6 +206,10 @@ export async function logOut(req, res, next) {
             message: 'Sesión cerrada correctamente' 
         });
     } catch (err) {
-        next(err);
+        console.error('Error en logout:', err);
+        return res.json({ 
+            ok: true, 
+            message: 'Sesión cerrada' 
+        });
     }
 }
