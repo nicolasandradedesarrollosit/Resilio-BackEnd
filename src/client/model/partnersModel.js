@@ -2,7 +2,7 @@ import { pool } from '../../config/db.js';
 
 export async function getAllPartners(userId = null) {
     try{
-        // Si hay userId, incluir información de si está canjeado
+        // Si hay userId, devolver solo beneficios NO canjeados
         if (userId) {
             const { rows } = await pool.query(
                 `SELECT
@@ -14,22 +14,20 @@ export async function getAllPartners(userId = null) {
                     bb.discount AS discount,
                     bb.q_of_codes AS codes,
                     b.url_image_business AS route_jpg,
-                    CASE 
-                        WHEN br.id IS NOT NULL THEN true 
-                        ELSE false 
-                    END AS is_redeemed,
-                    br.code AS redeemed_code,
-                    br.created_at AS redeemed_at
+                    b.latitude AS latitude,
+                    b.longitude AS longitude,
+                    false AS is_redeemed
                 FROM benefits_business bb
                 INNER JOIN business b ON bb.id_business_discount = b.id
                 LEFT JOIN benefits_redeemed br ON bb.id = br.id_benefit AND br.id_user = $1
+                WHERE br.id IS NULL
                 ORDER BY bb.id DESC;`,
                 [userId]
             );
             return rows;
         }
         
-        // Sin userId, devolver beneficios sin estado de canjeado
+        // Sin userId, devolver todos los beneficios
         const { rows } = await pool.query(
             `SELECT
                 benefits_business.id AS id,
@@ -40,6 +38,8 @@ export async function getAllPartners(userId = null) {
                 benefits_business.discount AS discount,
                 benefits_business.q_of_codes AS codes,
                 business.url_image_business AS route_jpg,
+                business.latitude AS latitude,
+                business.longitude AS longitude,
                 false AS is_redeemed
             FROM benefits_business
             INNER JOIN business ON benefits_business.id_business_discount = business.id

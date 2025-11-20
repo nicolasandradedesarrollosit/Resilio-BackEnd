@@ -166,7 +166,16 @@ app.use((req, res, next) => {
 
 app.get('/health-check', async (_req, res) => {
     res.status(200).json({ ok: true, message: 'API corriendo en Render 🚀' });
-})
+});
+
+app.get('/api/health', async (_req, res) => {
+    res.status(200).json({ 
+        ok: true, 
+        status: 'online',
+        message: 'API funcionando correctamente',
+        timestamp: new Date().toISOString()
+    });
+});
 
 app.use('/api', userRoute);
 app.use('/api', passwordRoute);

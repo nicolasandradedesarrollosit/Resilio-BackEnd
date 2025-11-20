@@ -12,7 +12,6 @@ export async function handleGetMyBenefits(req, res, next) {
     try {
         const idUser = req.params.idUser;
 
-        // Validate idUser is a valid positive integer
         const parsedId = parseInt(idUser, 10);
         
         if (!idUser || isNaN(parsedId) || parsedId <= 0) {
@@ -43,7 +42,6 @@ export async function postMyBenefitsController(req, res, next) {
         const benefitIdValue = benefitId || idBenefit;
         const userIdValue = userId || idUser;
 
-        // Parse and validate both IDs
         const parsedBenefitId = parseInt(benefitIdValue, 10);
         const parsedUserId = parseInt(userIdValue, 10);
 
@@ -51,13 +49,12 @@ export async function postMyBenefitsController(req, res, next) {
             isNaN(parsedUserId) || parsedUserId <= 0) {
             return res.status(400).json({ 
                 ok: false, 
-                message: 'Benefit ID and User ID are required and must be positive integers' 
+                message: 'El id de beneficio y el id de usuario deben ser enteros positivos' 
             });
         }
 
         // Verificar que el usuario solo pueda canjear beneficios para sí mismo
-        // (a menos que sea admin)
-        if (req.user.role !== 'admin' && req.user.id !== parsedUserId) {
+        if (req.user.id !== parsedUserId) {
             return res.status(403).json({ 
                 ok: false, 
                 message: 'No puedes canjear beneficios para otro usuario' 
@@ -96,3 +93,4 @@ export async function postMyBenefitsController(req, res, next) {
         next(err);
     }
 }
+

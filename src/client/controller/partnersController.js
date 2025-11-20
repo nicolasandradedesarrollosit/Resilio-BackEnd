@@ -2,7 +2,6 @@ import { getAllPartners } from '../model/partnersModel.js';
 
 export async function fetchAllPartners(req, res, next) {
     try {
-        // Si el usuario está autenticado, pasar su ID para incluir info de canjeados
         const userId = req.user?.id || null;
         
         const partners = await getAllPartners(userId);
