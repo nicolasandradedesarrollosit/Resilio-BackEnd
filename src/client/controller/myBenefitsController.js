@@ -83,7 +83,8 @@ export async function postMyBenefitsController(req, res, next) {
             });
         }
 
-        const code = createCode();
+        // Generar código único (await porque es async)
+        const code = await createCode();
 
         const newRedemption = await postMyBenefits({ 
             idBenefit: parsedBenefitId, 
