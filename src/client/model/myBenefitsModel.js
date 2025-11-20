@@ -9,8 +9,6 @@ export async function getMyBenefits(idUser) {
                 benefits_business.name AS name,
                 business.name AS business_name,
                 business.location AS location,
-                business.latitude AS latitude,
-                business.longitude AS longitude,
                 benefits_business.category_id AS category_id,
                 benefits_business.discount AS discount,
                 benefits_business.q_of_codes AS codes,

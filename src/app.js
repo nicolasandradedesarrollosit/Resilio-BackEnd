@@ -24,6 +24,13 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// ============================================
+// TRUST PROXY - Necesario para Render y otros servicios en la nube
+// ============================================
+// Esto permite que Express confíe en el header X-Forwarded-For
+// que es usado por proxies inversos como Render, Heroku, etc.
+app.set('trust proxy', true);
+
 const allowedOrigins = [
     'https://nicolasandradedesarrollosit.github.io',
     process.env.URL_FRONT 

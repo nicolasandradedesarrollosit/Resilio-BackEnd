@@ -14,8 +14,6 @@ export async function getAllPartners(userId = null) {
                     bb.discount AS discount,
                     bb.q_of_codes AS codes,
                     b.url_image_business AS route_jpg,
-                    b.latitude AS latitude,
-                    b.longitude AS longitude,
                     false AS is_redeemed
                 FROM benefits_business bb
                 INNER JOIN business b ON bb.id_business_discount = b.id
@@ -38,8 +36,6 @@ export async function getAllPartners(userId = null) {
                 benefits_business.discount AS discount,
                 benefits_business.q_of_codes AS codes,
                 business.url_image_business AS route_jpg,
-                business.latitude AS latitude,
-                business.longitude AS longitude,
                 false AS is_redeemed
             FROM benefits_business
             INNER JOIN business ON benefits_business.id_business_discount = business.id
